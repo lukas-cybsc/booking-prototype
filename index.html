@@ -1,0 +1,470 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Booking.com improved prototype with evidence-based UX enhancements">
+    <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline'; img-src 'self' https: data:;">
+    <title>Booking.com | Improved Prototype - Hotels & Accommodations</title>
+	<link rel="icon" type="image/x-icon" href="images/Favicon/favicon.ico">
+    
+    <!-- Link to External CSS -->
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <!-- Skip Link for Accessibility (WCAG 2.4.1) -->
+    <a href="#main-content" class="skip-link">Skip to main content</a>
+    
+    <!-- ARIA Live Region for Screen Reader Announcements -->
+    <div class="live-region" role="status" aria-live="polite" aria-atomic="true" id="live-region"></div>
+    
+    <!-- Header - Frame 1 from Wireframes -->
+    <header role="banner">
+        <div class="header-container">
+            <a href="#" class="logo" aria-label="Booking.com homepage">Booking.com</a>
+            <nav aria-label="Main navigation">
+                <ul class="header-nav">
+                    <li><a href="#stays">Stays</a></li>
+                    <li><a href="#flights">Flights</a></li>
+                    <li><a href="#car-rentals">Car rentals</a></li>
+                    <li><a href="#sign-in">Sign in</a></li>
+                    <li><a href="contact.html" class="contact-link">Contact Us</a></li>
+                </ul>
+            </nav>
+        </div>
+    </header>
+    
+    <!-- Hero Section with Search Bar - Frame 1 from Wireframes -->
+    <section class="hero-section" role="banner">
+        <h1>Find your next stay</h1>
+        <p>Search low prices on hotels, homes and much more...</p>
+        
+        <!-- Search Form with Yellow Outline (Wireframe Frame 1) -->
+        <div class="search-container">
+            <form class="search-form" role="search" aria-label="Search for accommodations" id="search-form">
+                <div class="form-group">
+                    <label for="destination">Where are you going?</label>
+                    <input 
+                        type="text" 
+                        id="destination" 
+                        name="destination" 
+                        placeholder="City, property name, or destination"
+                        required
+                        aria-required="true"
+                        autocomplete="off"
+                        maxlength="100"
+                        pattern="[a-zA-Z0-9\s\-,.']{2,100}"
+                        title="Please enter a valid destination (2-100 characters)"
+                    >
+                </div>
+                
+                <div class="form-group">
+                    <label for="check-in">Check-in date</label>
+                    <input 
+                        type="date" 
+                        id="check-in" 
+                        name="check-in" 
+                        required
+                        aria-required="true"
+                    >
+                </div>
+                
+                <div class="form-group">
+                    <label for="check-out">Check-out date</label>
+                    <input 
+                        type="date" 
+                        id="check-out" 
+                        name="check-out" 
+                        required
+                        aria-required="true"
+                    >
+                </div>
+                
+                <div class="form-group">
+                    <label for="guests">Guests</label>
+                    <select id="guests" name="guests" aria-label="Number of guests">
+                        <option value="1">1 guest</option>
+                        <option value="2" selected>2 guests</option>
+                        <option value="3">3 guests</option>
+                        <option value="4">4 guests</option>
+                        <option value="5+">5+ guests</option>
+                    </select>
+                </div>
+                
+                <button type="submit" class="btn-search" aria-label="Search for accommodations">Search</button>
+            </form>
+        </div>
+    </section>
+    
+    <!-- Main Content - Results Section (Frames 2, 3 from Wireframes) -->
+    <main id="main-content" role="main">
+        <section class="results-section" aria-label="Search results and filters">
+            
+            <!-- Filters Sidebar - Progressive Disclosure (Frames 2 & 3) -->
+            <aside class="filters-sidebar" role="complementary" aria-label="Filter options">
+                <h2>Filter by:</h2>
+                
+                <!-- PRIMARY FILTERS (6 filters - Always Visible - Frame 2) -->
+                <div class="filter-group">
+                    <h3>Price Range</h3>
+                    <div class="filter-option">
+                        <input type="checkbox" id="price-low" name="price" value="low" data-filter-type="price">
+                        <label for="price-low">Under $100</label>
+                        <span class="filter-count">(245)</span>
+                    </div>
+                    <div class="filter-option">
+                        <input type="checkbox" id="price-mid" name="price" value="mid" data-filter-type="price">
+                        <label for="price-mid">$100 - $200</label>
+                        <span class="filter-count">(189)</span>
+                    </div>
+                    <div class="filter-option">
+                        <input type="checkbox" id="price-high" name="price" value="high" data-filter-type="price">
+                        <label for="price-high">$200+</label>
+                        <span class="filter-count">(156)</span>
+                    </div>
+                </div>
+                
+                <div class="filter-group">
+                    <h3>Star Rating</h3>
+                    <div class="filter-option">
+                        <input type="checkbox" id="star-5" name="stars" value="5" data-filter-type="stars">
+                        <label for="star-5">5 stars</label>
+                        <span class="filter-count">(42)</span>
+                    </div>
+                    <div class="filter-option">
+                        <input type="checkbox" id="star-4" name="stars" value="4" data-filter-type="stars">
+                        <label for="star-4">4 stars</label>
+                        <span class="filter-count">(178)</span>
+                    </div>
+                    <div class="filter-option">
+                        <input type="checkbox" id="star-3" name="stars" value="3" data-filter-type="stars">
+                        <label for="star-3">3 stars</label>
+                        <span class="filter-count">(298)</span>
+                    </div>
+                </div>
+                
+                <div class="filter-group">
+                    <h3>Guest Review Score</h3>
+                    <div class="filter-option">
+                        <input type="checkbox" id="rating-9" name="rating" value="9" data-filter-type="rating">
+                        <label for="rating-9">Wonderful: 9+</label>
+                        <span class="filter-count">(89)</span>
+                    </div>
+                    <div class="filter-option">
+                        <input type="checkbox" id="rating-8" name="rating" value="8" data-filter-type="rating">
+                        <label for="rating-8">Very good: 8+</label>
+                        <span class="filter-count">(234)</span>
+                    </div>
+                    <div class="filter-option">
+                        <input type="checkbox" id="rating-7" name="rating" value="7" data-filter-type="rating">
+                        <label for="rating-7">Good: 7+</label>
+                        <span class="filter-count">(412)</span>
+                    </div>
+                </div>
+                
+                <div class="filter-group">
+                    <h3>Free Cancellation</h3>
+                    <div class="filter-option">
+                        <input type="checkbox" id="free-cancel" name="cancellation" value="free" data-filter-type="cancellation">
+                        <label for="free-cancel">Free cancellation available</label>
+                        <span class="filter-count">(367)</span>
+                    </div>
+                </div>
+                
+                <div class="filter-group">
+                    <h3>Property Type</h3>
+                    <div class="filter-option">
+                        <input type="checkbox" id="type-hotel" name="type" value="hotel" data-filter-type="type">
+                        <label for="type-hotel">Hotels</label>
+                        <span class="filter-count">(402)</span>
+                    </div>
+                    <div class="filter-option">
+                        <input type="checkbox" id="type-apartment" name="type" value="apartment" data-filter-type="type">
+                        <label for="type-apartment">Apartments</label>
+                        <span class="filter-count">(156)</span>
+                    </div>
+                    <div class="filter-option">
+                        <input type="checkbox" id="type-resort" name="type" value="resort" data-filter-type="type">
+                        <label for="type-resort">Resorts</label>
+                        <span class="filter-count">(32)</span>
+                    </div>
+                </div>
+                
+                <div class="filter-group">
+                    <h3>Amenities</h3>
+                    <div class="filter-option">
+                        <input type="checkbox" id="amenity-wifi" name="amenity" value="wifi" data-filter-type="amenity">
+                        <label for="amenity-wifi">Free WiFi</label>
+                        <span class="filter-count">(489)</span>
+                    </div>
+                    <div class="filter-option">
+                        <input type="checkbox" id="amenity-parking" name="amenity" value="parking" data-filter-type="amenity">
+                        <label for="amenity-parking">Free parking</label>
+                        <span class="filter-count">(234)</span>
+                    </div>
+                    <div class="filter-option">
+                        <input type="checkbox" id="amenity-pool" name="amenity" value="pool" data-filter-type="amenity">
+                        <label for="amenity-pool">Pool</label>
+                        <span class="filter-count">(145)</span>
+                    </div>
+                </div>
+                
+                <!-- SECONDARY FILTERS (17 filters - Hidden by Default - Frame 3) -->
+                <div class="secondary-filters" id="secondary-filters">
+                    <div class="filter-group">
+                        <h3>Bed Preference</h3>
+                        <div class="filter-option">
+                            <input type="checkbox" id="bed-twin" name="bed" value="twin" data-filter-type="bed">
+                            <label for="bed-twin">Twin beds</label>
+                            <span class="filter-count">(187)</span>
+                        </div>
+                        <div class="filter-option">
+                            <input type="checkbox" id="bed-double" name="bed" value="double" data-filter-type="bed">
+                            <label for="bed-double">Double bed</label>
+                            <span class="filter-count">(298)</span>
+                        </div>
+                    </div>
+                    
+                    <div class="filter-group">
+                        <h3>Meals</h3>
+                        <div class="filter-option">
+                            <input type="checkbox" id="meal-breakfast" name="meal" value="breakfast" data-filter-type="meal">
+                            <label for="meal-breakfast">Breakfast included</label>
+                            <span class="filter-count">(234)</span>
+                        </div>
+                        <div class="filter-option">
+                            <input type="checkbox" id="meal-kitchen" name="meal" value="kitchen" data-filter-type="meal">
+                            <label for="meal-kitchen">Kitchen facilities</label>
+                            <span class="filter-count">(145)</span>
+                        </div>
+                    </div>
+                    
+                    <div class="filter-group">
+                        <h3>Bathroom</h3>
+                        <div class="filter-option">
+                            <input type="checkbox" id="bath-private" name="bathroom" value="private" data-filter-type="bathroom">
+                            <label for="bath-private">Private bathroom</label>
+                            <span class="filter-count">(456)</span>
+                        </div>
+                        <div class="filter-option">
+                            <input type="checkbox" id="bath-accessible" name="bathroom" value="accessible" data-filter-type="bathroom">
+                            <label for="bath-accessible">Accessible bathroom</label>
+                            <span class="filter-count">(67)</span>
+                        </div>
+                    </div>
+                    
+                    <div class="filter-group">
+                        <h3>Room Features</h3>
+                        <div class="filter-option">
+                            <input type="checkbox" id="feature-balcony" name="features" value="balcony" data-filter-type="features">
+                            <label for="feature-balcony">Balcony</label>
+                            <span class="filter-count">(123)</span>
+                        </div>
+                        <div class="filter-option">
+                            <input type="checkbox" id="feature-view" name="features" value="view" data-filter-type="features">
+                            <label for="feature-view">Sea view</label>
+                            <span class="filter-count">(89)</span>
+                        </div>
+                        <div class="filter-option">
+                            <input type="checkbox" id="feature-ac" name="features" value="ac" data-filter-type="features">
+                            <label for="feature-ac">Air conditioning</label>
+                            <span class="filter-count">(398)</span>
+                        </div>
+                    </div>
+                    
+                    <div class="filter-group">
+                        <h3>Accessibility</h3>
+                        <div class="filter-option">
+                            <input type="checkbox" id="access-wheelchair" name="accessibility" value="wheelchair" data-filter-type="accessibility">
+                            <label for="access-wheelchair">Wheelchair accessible</label>
+                            <span class="filter-count">(89)</span>
+                        </div>
+                        <div class="filter-option">
+                            <input type="checkbox" id="access-elevator" name="accessibility" value="elevator" data-filter-type="accessibility">
+                            <label for="access-elevator">Elevator</label>
+                            <span class="filter-count">(345)</span>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Progressive Disclosure Button (Frame 2 & 3) -->
+                <button 
+                    type="button" 
+                    class="btn-show-more" 
+                    id="toggle-filters"
+                    aria-expanded="false"
+                    aria-controls="secondary-filters"
+                >
+                    Show all filters
+                </button>
+            </aside>
+            
+            <!-- Properties List (Frames 4, 5 from Wireframes) -->
+            <div class="properties-grid">
+                <div class="results-header">
+                    <h2 id="results-count">Sydney: 590 properties found</h2>
+                    <select class="sort-dropdown" aria-label="Sort results by">
+                        <option value="recommended">Our top picks</option>
+                        <option value="price-low">Price (lowest first)</option>
+                        <option value="price-high">Price (highest first)</option>
+                        <option value="rating">Guest rating</option>
+                    </select>
+                </div>
+                
+                <!-- Property Card 1 - GREEN MESSAGE (Frame 4) -->
+                <article class="property-card">
+                    <div class="property-image-container">
+                        <img 
+                            src="https://sydneyharbourhotel.com/wordpress/wp-content/uploads/2024/01/A08I0348.jpg" 
+                            alt="Harbour View Hotel exterior with harbour views"
+                            class="property-image"
+                            loading="lazy"
+                        >
+                    </div>
+                    
+                    <div class="property-details">
+                        <a href="#" class="property-name">Harbour View Hotel</a>
+                        <p class="property-location">The Rocks, Sydney CBD</p>
+                        
+                        <div class="property-rating">
+                            <span class="rating-badge" aria-label="Rating: 9.2 out of 10">9.2</span>
+                            <span class="rating-text">Wonderful</span>
+                            <span class="rating-count">(1,284 reviews)</span>
+                        </div>
+                        
+                        <div class="property-amenities">
+                            <span class="amenity-tag">Free WiFi</span>
+                            <span class="amenity-tag">Pool</span>
+                            <span class="amenity-tag">Restaurant</span>
+                            <span class="amenity-tag">Parking</span>
+                        </div>
+                        
+                        <!-- Single GREEN Trust Message (Frame 4 - Priority 1) -->
+                        <div class="property-messages">
+                            <span class="message-tag message-success">✓ Free cancellation</span>
+                        </div>
+                    </div>
+                    
+                    <div class="property-pricing">
+                        <div class="price-container">
+                            <p class="price-label">1 night, 2 adults</p>
+                            <p class="price-value">$189</p>
+                            <p class="price-taxes">+$28 taxes and charges</p>
+                        </div>
+                        <button class="btn-availability" aria-label="See availability for Harbour View Hotel">See availability</button>
+                    </div>
+                </article>
+                
+                <!-- Property Card 2 - RED URGENCY MESSAGE (Frame 5) -->
+                <article class="property-card">
+                    <div class="property-image-container">
+                        <img 
+                            src="https://dynamic-media-cdn.tripadvisor.com/media/photo-o/13/de/35/aa/the-grand-hotel.jpg?w=900&h=-1&s=1" 
+                            alt="Sydney Grand Hotel modern exterior"
+                            class="property-image"
+                            loading="lazy"
+                        >
+                    </div>
+                    
+                    <div class="property-details">
+                        <a href="#" class="property-name">Sydney Grand Hotel</a>
+                        <p class="property-location">Darling Harbour</p>
+                        
+                        <div class="property-rating">
+                            <span class="rating-badge" aria-label="Rating: 8.7 out of 10">8.7</span>
+                            <span class="rating-text">Excellent</span>
+                            <span class="rating-count">(892 reviews)</span>
+                        </div>
+                        
+                        <div class="property-amenities">
+                            <span class="amenity-tag">Free WiFi</span>
+                            <span class="amenity-tag">Gym</span>
+                            <span class="amenity-tag">24-hour front desk</span>
+                        </div>
+                        
+                        <!-- Single RED Urgency Message (Frame 5 - Priority 1) -->
+                        <div class="property-messages">
+                            <span class="message-tag message-urgency">⚠ Only 2 rooms left at this price!</span>
+                        </div>
+                    </div>
+                    
+                    <div class="property-pricing">
+                        <div class="price-container">
+                            <p class="price-label">1 night, 2 adults</p>
+                            <p class="price-value">$156</p>
+                            <p class="price-taxes">+$23 taxes and charges</p>
+                        </div>
+                        <button class="btn-availability" aria-label="See availability for Sydney Grand Hotel">See availability</button>
+                    </div>
+                </article>
+                
+                <!-- Property Card 3 - GREEN MESSAGE -->
+                <article class="property-card">
+                    <div class="property-image-container">
+                        <img 
+                            src="https://www.onecircularquay.com/contentassets/ff088353d7814d189655ec7d5a2fb9cf/apartment-c_living_aero_01.jpg?width=300&height=400&upscale=false&mode=max&quality=80" 
+                            alt="Circular Quay Apartment with harbour view"
+                            class="property-image"
+                            loading="lazy"
+                        >
+                    </div>
+                    
+                    <div class="property-details">
+                        <a href="#" class="property-name">Circular Quay Apartment</a>
+                        <p class="property-location">Sydney CBD</p>
+                        
+                        <div class="property-rating">
+                            <span class="rating-badge" aria-label="Rating: 9.5 out of 10">9.5</span>
+                            <span class="rating-text">Exceptional</span>
+                            <span class="rating-count">(456 reviews)</span>
+                        </div>
+                        
+                        <div class="property-amenities">
+                            <span class="amenity-tag">Full kitchen</span>
+                            <span class="amenity-tag">Harbour view</span>
+                            <span class="amenity-tag">Free WiFi</span>
+                        </div>
+                        
+                        <!-- Single GREEN Message -->
+                        <div class="property-messages">
+                            <span class="message-tag message-success">✓ Free cancellation</span>
+                        </div>
+                    </div>
+                    
+                    <div class="property-pricing">
+                        <div class="price-container">
+                            <p class="price-label">1 night, 2 adults</p>
+                            <p class="price-value">$245</p>
+                            <p class="price-taxes">+$37 taxes and charges</p>
+                        </div>
+                        <button class="btn-availability" aria-label="See availability for Circular Quay Apartment">See availability</button>
+                    </div>
+                </article>
+                
+                <!-- Skeleton Loader (Frame 8 - Priority 4) -->
+                <div class="skeleton-loader" id="skeleton-loader">
+                    <div class="skeleton-card">
+                        <div class="skeleton-image"></div>
+                        <div class="skeleton-content">
+                            <div class="skeleton-line"></div>
+                            <div class="skeleton-line short"></div>
+                            <div class="skeleton-line medium"></div>
+                        </div>
+                    </div>
+                    <div class="skeleton-card">
+                        <div class="skeleton-image"></div>
+                        <div class="skeleton-content">
+                            <div class="skeleton-line"></div>
+                            <div class="skeleton-line short"></div>
+                            <div class="skeleton-line medium"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </main>
+    
+    <!-- Link to External JavaScript -->
+    <script src="script.js"></script>
+</body>
+</html>

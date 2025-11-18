@@ -1,0 +1,579 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Contact Booking.com - We're here to help with your travel needs">
+    <title>Contact Us | Booking.com</title>
+    <link rel="icon" type="image/x-icon" href="images/Favicon/favicon.ico">
+    
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    
+    <!-- Link to External CSS -->
+    <link rel="stylesheet" href="styles.css">
+    
+    <style>
+        .contact-hero {
+            background: linear-gradient(135deg, #003B95 0%, #003580 100%);
+            color: white;
+            padding: 80px 0 60px;
+            text-align: center;
+        }
+        
+        .contact-hero h1 {
+            font-size: 48px;
+            margin-bottom: 20px;
+            font-weight: 700;
+        }
+        
+        .contact-hero p {
+            font-size: 18px;
+            opacity: 0.9;
+        }
+        
+        .contact-container {
+            max-width: 1200px;
+            margin: -40px auto 80px;
+            padding: 0 20px;
+        }
+        
+        .contact-card {
+            background: white;
+            border-radius: 8px;
+            box-shadow: 0 4px 16px rgba(0,0,0,0.1);
+            overflow: hidden;
+        }
+        
+        .contact-info {
+            background: #f8f9fa;
+            padding: 40px;
+        }
+        
+        .contact-info h3 {
+            font-size: 24px;
+            margin-bottom: 30px;
+            color: #003580;
+        }
+        
+        .contact-method {
+            display: flex;
+            align-items: flex-start;
+            margin-bottom: 30px;
+        }
+        
+        .contact-icon {
+            width: 50px;
+            height: 50px;
+            background: #003580;
+            color: white;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-right: 20px;
+            flex-shrink: 0;
+        }
+        
+        .contact-icon svg {
+            width: 24px;
+            height: 24px;
+        }
+        
+        .contact-details h4 {
+            font-size: 16px;
+            font-weight: 600;
+            margin-bottom: 5px;
+            color: #262626;
+        }
+        
+        .contact-details p {
+            margin: 0;
+            color: #6B6B6B;
+            font-size: 14px;
+        }
+        
+        .contact-form-section {
+            padding: 40px;
+        }
+        
+        .contact-form-section h3 {
+            font-size: 24px;
+            margin-bottom: 30px;
+            color: #003580;
+        }
+        
+        .form-label {
+            font-weight: 600;
+            color: #262626;
+            margin-bottom: 8px;
+        }
+        
+        .form-control, .form-select {
+            border: 1px solid #CCCCCC;
+            border-radius: 4px;
+            padding: 12px;
+            font-size: 14px;
+        }
+        
+        .form-control:focus, .form-select:focus {
+            border-color: #003580;
+            box-shadow: 0 0 0 0.2rem rgba(0, 53, 128, 0.25);
+        }
+        
+        .btn-submit {
+            background-color: #003580;
+            color: white;
+            border: none;
+            padding: 14px 40px;
+            border-radius: 4px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: background-color 0.3s;
+            width: 100%;
+        }
+        
+        .btn-submit:hover {
+            background-color: #003B95;
+        }
+        
+        .success-message {
+            display: none;
+            background: #E8F5E9;
+            color: #008234;
+            padding: 20px;
+            border-radius: 4px;
+            margin-bottom: 20px;
+            border-left: 4px solid #008234;
+        }
+        
+        .success-message.show {
+            display: block;
+            animation: slideIn 0.3s ease;
+        }
+        
+        @keyframes slideIn {
+            from {
+                opacity: 0;
+                transform: translateY(-10px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+        
+        .back-link {
+            display: inline-flex;
+            align-items: center;
+            color: white;
+            text-decoration: none;
+            margin-bottom: 20px;
+            font-size: 14px;
+        }
+        
+        .back-link svg {
+            margin-right: 8px;
+        }
+        
+        .back-link:hover {
+            color: #FEBB02;
+        }
+        
+        @media (max-width: 768px) {
+            .contact-hero h1 {
+                font-size: 32px;
+            }
+            
+            .contact-form-section,
+            .contact-info {
+                padding: 30px 20px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Header -->
+    <header role="banner">
+        <div class="header-container">
+            <a href="index.html" class="logo" aria-label="Booking.com homepage">Booking.com</a>
+            <nav aria-label="Main navigation">
+                <ul class="header-nav">
+                    <li><a href="index.html#stays">Stays</a></li>
+                    <li><a href="#flights">Flights</a></li>
+                    <li><a href="#car-rentals">Car rentals</a></li>
+                    <li><a href="#sign-in">Sign in</a></li>
+                </ul>
+            </nav>
+        </div>
+    </header>
+    
+    <!-- Contact Hero -->
+    <section class="contact-hero">
+        <div class="container">
+            <a href="index.html" class="back-link">
+                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" viewBox="0 0 16 16">
+                    <path fill-rule="evenodd" d="M15 8a.5.5 0 0 0-.5-.5H2.707l3.147-3.146a.5.5 0 1 0-.708-.708l-4 4a.5.5 0 0 0 0 .708l4 4a.5.5 0 0 0 .708-.708L2.707 8.5H14.5A.5.5 0 0 0 15 8z"/>
+                </svg>
+                Back to Home
+            </a>
+            <h1>Get in Touch</h1>
+            <p>We're here to help with any questions about your booking or travel plans</p>
+        </div>
+    </section>
+    
+    <!-- Contact Content -->
+    <div class="contact-container">
+        <div class="contact-card">
+            <div class="row g-0">
+                <!-- Contact Information -->
+                <div class="col-lg-4">
+                    <div class="contact-info">
+                        <h3>Contact Information</h3>
+                        
+                        <div class="contact-method">
+                            <div class="contact-icon">
+                                <svg xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 16 16">
+                                    <path d="M3.654 1.328a.678.678 0 0 0-1.015-.063L1.605 2.3c-.483.484-.661 1.169-.45 1.77a17.568 17.568 0 0 0 4.168 6.608 17.569 17.569 0 0 0 6.608 4.168c.601.211 1.286.033 1.77-.45l1.034-1.034a.678.678 0 0 0-.063-1.015l-2.307-1.794a.678.678 0 0 0-.58-.122l-2.19.547a1.745 1.745 0 0 1-1.657-.459L5.482 8.062a1.745 1.745 0 0 1-.46-1.657l.548-2.19a.678.678 0 0 0-.122-.58L3.654 1.328zM1.884.511a1.745 1.745 0 0 1 2.612.163L6.29 2.98c.329.423.445.974.315 1.494l-.547 2.19a.678.678 0 0 0 .178.643l2.457 2.457a.678.678 0 0 0 .644.178l2.189-.547a1.745 1.745 0 0 1 1.494.315l2.306 1.794c.829.645.905 1.87.163 2.611l-1.034 1.034c-.74.74-1.846 1.065-2.877.702a18.634 18.634 0 0 1-7.01-4.42 18.634 18.634 0 0 1-4.42-7.009c-.362-1.03-.037-2.137.703-2.877L1.885.511z"/>
+                                </svg>
+                            </div>
+                            <div class="contact-details">
+                                <h4>Phone</h4>
+                                <p>(02) 1236 7888</p>
+                                <p>Mon-Fri: 8am - 10pm</p>
+                                <p>Sat-Sun: 9am - 8pm</p>
+                            </div>
+                        </div>
+                        
+                        <div class="contact-method">
+                            <div class="contact-icon">
+                                <svg xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 16 16">
+                                    <path d="M0 4a2 2 0 0 1 2-2h12a2 2 0 0 1 2 2v8a2 2 0 0 1-2 2H2a2 2 0 0 1-2-2V4Zm2-1a1 1 0 0 0-1 1v.217l7 4.2 7-4.2V4a1 1 0 0 0-1-1H2Zm13 2.383-4.708 2.825L15 11.105V5.383Zm-.034 6.876-5.64-3.471L8 9.583l-1.326-.795-5.64 3.47A1 1 0 0 0 2 13h12a1 1 0 0 0 .966-.741ZM1 11.105l4.708-2.897L1 5.383v5.722Z"/>
+                                </svg>
+                            </div>
+                            <div class="contact-details">
+                                <h4>Email</h4>
+                                <p>support@booking.com</p>
+                                <p>We'll respond within 24 hours</p>
+                            </div>
+                        </div>
+                        
+                        <div class="contact-method">
+                            <div class="contact-icon">
+                                <svg xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 16 16">
+                                    <path d="M8 16s6-5.686 6-10A6 6 0 0 0 2 6c0 4.314 6 10 6 10zm0-7a3 3 0 1 1 0-6 3 3 0 0 1 0 6z"/>
+                                </svg>
+                            </div>
+                            <div class="contact-details">
+                                <h4>Office</h4>
+                                <p>123 Travel Street</p>
+                                <p>Sydney, NSW 2000</p>
+                                <p>Australia</p>
+                            </div>
+                        </div>
+                        
+                        <div class="contact-method">
+                            <div class="contact-icon">
+                                <svg xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 16 16">
+                                    <path d="M0 2a2 2 0 0 1 2-2h12a2 2 0 0 1 2 2v12a2 2 0 0 1-2 2H2a2 2 0 0 1-2-2V2zm8.5 9.5a.5.5 0 0 1-1 0V5.707L5.354 7.854a.5.5 0 1 1-.708-.708l3-3a.5.5 0 0 1 .708 0l3 3a.5.5 0 0 1-.708.708L8.5 5.707V11.5z"/>
+                                </svg>
+                            </div>
+                            <div class="contact-details">
+                                <h4>Live Chat</h4>
+                                <p>Available 24/7</p>
+                                <p>Click the chat icon below</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Contact Form -->
+                <div class="col-lg-8">
+                    <div class="contact-form-section">
+                        <h3>Send us a Message</h3>
+                        
+                        <div class="success-message" id="successMessage">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor" class="bi bi-check-circle-fill" viewBox="0 0 16 16" style="margin-right: 10px; vertical-align: middle;">
+                                <path d="M16 8A8 8 0 1 1 0 8a8 8 0 0 1 16 0zm-3.97-3.03a.75.75 0 0 0-1.08.022L7.477 9.417 5.384 7.323a.75.75 0 0 0-1.06 1.06L6.97 11.03a.75.75 0 0 0 1.079-.02l3.992-4.99a.75.75 0 0 0-.01-1.05z"/>
+                            </svg>
+                            <strong>Message sent successfully!</strong> We'll get back to you within 24 hours.
+                        </div>
+                        
+                        <form id="contactForm">
+                            <div class="row">
+                                <div class="col-md-6 mb-3">
+                                    <label for="firstName" class="form-label">First Name *</label>
+                                    <input type="text" class="form-control" id="firstName" name="firstName" 
+                                           required maxlength="50" 
+                                           pattern="^[a-zA-Z\s\-']{2,50}$"
+                                           title="Please enter a valid first name (2-50 characters, letters only)">
+                                </div>
+                                <div class="col-md-6 mb-3">
+                                    <label for="lastName" class="form-label">Last Name *</label>
+                                    <input type="text" class="form-control" id="lastName" name="lastName" 
+                                           required maxlength="50"
+                                           pattern="^[a-zA-Z\s\-']{2,50}$"
+                                           title="Please enter a valid last name (2-50 characters, letters only)">
+                                </div>
+                            </div>
+                            
+                            <div class="row">
+                                <div class="col-md-6 mb-3">
+                                    <label for="email" class="form-label">Email Address *</label>
+                                    <input type="email" class="form-control" id="email" name="email" 
+                                           required maxlength="100"
+                                           pattern="^[^\s@]+@[^\s@]+\.[^\s@]+$"
+                                           title="Please enter a valid email address">
+                                </div>
+                                <div class="col-md-6 mb-3">
+                                    <label for="phone" class="form-label">Phone Number</label>
+                                    <input type="tel" class="form-control" id="phone" name="phone" 
+                                           maxlength="20"
+                                           pattern="^[\d\s\+\-\(\)]{7,20}$"
+                                           title="Please enter a valid phone number">
+                                </div>
+                            </div>
+                            
+                            <div class="mb-3">
+                                <label for="subject" class="form-label">Subject *</label>
+                                <select class="form-select" id="subject" name="subject" required>
+                                    <option value="">Choose a topic...</option>
+                                    <option value="booking">Booking Inquiry</option>
+                                    <option value="modification">Modify Reservation</option>
+                                    <option value="cancellation">Cancellation Request</option>
+                                    <option value="payment">Payment Issue</option>
+                                    <option value="property">Property Information</option>
+                                    <option value="complaint">Complaint</option>
+                                    <option value="feedback">Feedback</option>
+                                    <option value="other">Other</option>
+                                </select>
+                            </div>
+                            
+                            <div class="mb-3">
+                                <label for="bookingRef" class="form-label">Booking Reference (if applicable)</label>
+                                <input type="text" class="form-control" id="bookingRef" name="bookingRef" 
+                                       placeholder="e.g., BK123456789" maxlength="20"
+                                       pattern="^[A-Z0-9]{0,20}$"
+                                       title="Booking reference should contain only uppercase letters and numbers">
+                            </div>
+                            
+                            <div class="mb-4">
+                                <label for="message" class="form-label">Message *</label>
+                                <textarea class="form-control" id="message" name="message" rows="6" 
+                                          required minlength="10" maxlength="1000"
+                                          placeholder="Please provide as much detail as possible..."></textarea>
+                            </div>
+                            
+                            <button type="submit" class="btn-submit">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-send-fill" viewBox="0 0 16 16" style="margin-right: 8px; vertical-align: middle;">
+                                    <path d="M15.964.686a.5.5 0 0 0-.65-.65L.767 5.855H.766l-.452.18a.5.5 0 0 0-.082.887l.41.26.001.002 4.995 3.178 3.178 4.995.002.002.26.41a.5.5 0 0 0 .886-.083l6-15Zm-1.833 1.89L6.637 10.07l-.215-.338a.5.5 0 0 0-.154-.154l-.338-.215 7.494-7.494 1.178-.471-.47 1.178Z"/>
+                                </svg>
+                                Send Message
+                            </button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Footer -->
+    <footer style="background: #003580; color: white; padding: 40px 20px; text-align: center; margin-top: 60px;">
+        <div class="container">
+            <p style="margin: 0; font-size: 14px;">© 2025 Booking.com. All rights reserved.</p>
+            <p style="margin: 10px 0 0; font-size: 12px; opacity: 0.8;">Your trusted travel partner worldwide</p>
+        </div>
+    </footer>
+    
+    <!-- jQuery -->
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    
+    <!-- Bootstrap JS -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    
+    <!-- Contact Form Script with Security -->
+    <script>
+        $(document).ready(function() {
+            
+            // ============================================
+            // XSS SANITIZATION FUNCTION
+            // ============================================
+            function sanitizeInput(input) {
+                if (typeof input !== 'string') {
+                    return '';
+                }
+                
+                // Create a temporary div element
+                const temp = document.createElement('div');
+                temp.textContent = input;
+                const sanitized = temp.innerHTML;
+                
+                // Additional sanitization: remove any remaining script tags or event handlers
+                return sanitized
+                    .replace(/<script\b[^<]*(?:(?!<\/script>)<[^<]*)*<\/script>/gi, '')
+                    .replace(/on\w+\s*=\s*["'][^"']*["']/gi, '')
+                    .replace(/javascript:/gi, '')
+                    .trim();
+            }
+            
+            // ============================================
+            // INPUT VALIDATION FUNCTIONS
+            // ============================================
+            const validators = {
+                name: function(value) {
+                    const pattern = /^[a-zA-Z\s\-']{2,50}$/;
+                    return pattern.test(value) && value.length >= 2 && value.length <= 50;
+                },
+                email: function(value) {
+                    const pattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+                    return pattern.test(value) && value.length <= 100;
+                },
+                phone: function(value) {
+                    if (!value) return true; // Phone is optional
+                    const pattern = /^[\d\s\+\-\(\)]{7,20}$/;
+                    return pattern.test(value);
+                },
+                bookingRef: function(value) {
+                    if (!value) return true; // Booking ref is optional
+                    const pattern = /^[A-Z0-9]{1,20}$/;
+                    return pattern.test(value);
+                },
+                message: function(value) {
+                    return value.length >= 10 && value.length <= 1000;
+                },
+                subject: function(value) {
+                    const validSubjects = ['booking', 'modification', 'cancellation', 'payment', 'property', 'complaint', 'feedback', 'other'];
+                    return validSubjects.includes(value);
+                }
+            };
+            
+            // ============================================
+            // FORM SUBMISSION WITH SECURITY
+            // ============================================
+            $('#contactForm').on('submit', function(e) {
+                e.preventDefault();
+                
+                // Get and sanitize form values
+                const formData = {
+                    firstName: sanitizeInput($('#firstName').val()),
+                    lastName: sanitizeInput($('#lastName').val()),
+                    email: sanitizeInput($('#email').val()),
+                    phone: sanitizeInput($('#phone').val()),
+                    subject: sanitizeInput($('#subject').val()),
+                    bookingRef: sanitizeInput($('#bookingRef').val()).toUpperCase(),
+                    message: sanitizeInput($('#message').val())
+                };
+                
+                // Validate all fields
+                let validationErrors = [];
+                
+                if (!validators.name(formData.firstName)) {
+                    validationErrors.push('First name must be 2-50 characters and contain only letters');
+                }
+                
+                if (!validators.name(formData.lastName)) {
+                    validationErrors.push('Last name must be 2-50 characters and contain only letters');
+                }
+                
+                if (!validators.email(formData.email)) {
+                    validationErrors.push('Please enter a valid email address');
+                }
+                
+                if (formData.phone && !validators.phone(formData.phone)) {
+                    validationErrors.push('Please enter a valid phone number');
+                }
+                
+                if (!validators.subject(formData.subject)) {
+                    validationErrors.push('Please select a valid subject');
+                }
+                
+                if (formData.bookingRef && !validators.bookingRef(formData.bookingRef)) {
+                    validationErrors.push('Booking reference should contain only uppercase letters and numbers');
+                }
+                
+                if (!validators.message(formData.message)) {
+                    validationErrors.push('Message must be between 10 and 1000 characters');
+                }
+                
+                // If validation fails, show errors
+                if (validationErrors.length > 0) {
+                    alert('Please correct the following errors:\n\n' + validationErrors.join('\n'));
+                    return;
+                }
+                
+                // Simulate form submission with animation
+                const submitBtn = $('.btn-submit');
+                const originalText = submitBtn.html();
+                
+                submitBtn.prop('disabled', true);
+                submitBtn.html('<span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span> Sending...');
+                
+                // Simulate AJAX call (in production, this would be a real API call)
+                setTimeout(function() {
+                    // Show success message
+                    $('#successMessage').addClass('show');
+                    
+                    // Reset form
+                    $('#contactForm')[0].reset();
+                    
+                    // Reset button
+                    submitBtn.prop('disabled', false);
+                    submitBtn.html(originalText);
+                    
+                    // Log sanitized data to console (in production, this would be sent to a server)
+                    console.log('Contact Form Submission (Sanitized):', formData);
+                    console.log('Timestamp:', new Date().toISOString());
+                    
+                    // Scroll to success message
+                    $('html, body').animate({
+                        scrollTop: $('#successMessage').offset().top - 100
+                    }, 500);
+                    
+                    // Hide success message after 5 seconds
+                    setTimeout(function() {
+                        $('#successMessage').removeClass('show');
+                    }, 5000);
+                    
+                }, 1500);
+            });
+            
+            // ============================================
+            // REAL-TIME INPUT SANITIZATION
+            // ============================================
+            $('input[type="text"], input[type="email"], textarea').on('blur', function() {
+                const sanitized = sanitizeInput($(this).val());
+                $(this).val(sanitized);
+            });
+            
+            // ============================================
+            // BOOKING REFERENCE AUTO-FORMATTING
+            // ============================================
+            $('#bookingRef').on('input', function() {
+                let value = $(this).val().toUpperCase().replace(/[^A-Z0-9]/g, '');
+                $(this).val(value);
+            });
+            
+            // ============================================
+            // PHONE NUMBER FORMATTING AND VALIDATION
+            // ============================================
+            $('#phone').on('input', function() {
+                let value = $(this).val().replace(/[^\d\s\+\-\(\)]/g, '');
+                $(this).val(value);
+            });
+            
+            // ============================================
+            // CHARACTER LIMIT ENFORCEMENT
+            // ============================================
+            $('#message').on('input', function() {
+                const maxLength = 1000;
+                if ($(this).val().length > maxLength) {
+                    $(this).val($(this).val().substring(0, maxLength));
+                }
+            });
+            
+            console.log('✓ Contact form initialized with XSS protection and input validation');
+        });
+    </script>
+</body>
+</html>
