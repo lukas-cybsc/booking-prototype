@@ -19,7 +19,7 @@
     <div class="live-region" role="status" aria-live="polite" aria-atomic="true" id="live-region"></div>
     
     <!-- Header - Frame 1 from Wireframes -->
-    <header role="banner">
+    <header>
         <div class="header-container">
             <a href="#" class="logo" aria-label="Booking.com homepage">Booking.com</a>
             <nav aria-label="Main navigation">
@@ -97,11 +97,11 @@
     </section>
     
     <!-- Main Content - Results Section (Frames 2, 3 from Wireframes) -->
-    <main id="main-content" role="main">
+    <main id="main-content">
         <section class="results-section" aria-label="Search results and filters">
             
             <!-- Filters Sidebar - Progressive Disclosure (Frames 2 & 3) -->
-            <aside class="filters-sidebar" role="complementary" aria-label="Filter options">
+            <aside class="filters-sidebar" aria-label="Filter options">
                 <h2>Filter by:</h2>
                 
                 <!-- PRIMARY FILTERS (6 filters - Always Visible - Frame 2) -->
@@ -312,7 +312,18 @@
                 </div>
                 
                 <!-- Property Card 1 - GREEN MESSAGE (Frame 4) -->
-                <article class="property-card">
+                <article class="property-card" 
+                         data-price="189"
+                         data-stars="4"
+                         data-rating="9.2"
+                         data-cancellation="free"
+                         data-type="hotel"
+                         data-amenities="wifi,pool,parking"
+                         data-bed="double"
+                         data-meal="none"
+                         data-bathroom="private"
+                         data-features="ac"
+                         data-accessibility="elevator">
                     <div class="property-image-container">
                         <img 
                             src="https://sydneyharbourhotel.com/wordpress/wp-content/uploads/2024/01/A08I0348.jpg" 
@@ -323,11 +334,13 @@
                     </div>
                     
                     <div class="property-details">
-                        <a href="#" class="property-name">Harbour View Hotel</a>
+                        <h3 class="property-name-heading">
+                            <a href="#" class="property-name">Harbour View Hotel</a>
+                        </h3>
                         <p class="property-location">The Rocks, Sydney CBD</p>
                         
                         <div class="property-rating">
-                            <span class="rating-badge" aria-label="Rating: 9.2 out of 10">9.2</span>
+                            <span class="rating-badge">9.2</span>
                             <span class="rating-text">Wonderful</span>
                             <span class="rating-count">(1,284 reviews)</span>
                         </div>
@@ -367,11 +380,13 @@
                     </div>
                     
                     <div class="property-details">
-                        <a href="#" class="property-name">Sydney Grand Hotel</a>
+                        <h3 class="property-name-heading">
+                            <a href="#" class="property-name">Sydney Grand Hotel</a>
+                        </h3>
                         <p class="property-location">Darling Harbour</p>
                         
                         <div class="property-rating">
-                            <span class="rating-badge" aria-label="Rating: 8.7 out of 10">8.7</span>
+                            <span class="rating-badge">8.7</span>
                             <span class="rating-text">Excellent</span>
                             <span class="rating-count">(892 reviews)</span>
                         </div>
@@ -410,11 +425,13 @@
                     </div>
                     
                     <div class="property-details">
-                        <a href="#" class="property-name">Circular Quay Apartment</a>
+                        <h3 class="property-name-heading">
+                            <a href="#" class="property-name">Circular Quay Apartment</a>
+                        </h3>
                         <p class="property-location">Sydney CBD</p>
                         
                         <div class="property-rating">
-                            <span class="rating-badge" aria-label="Rating: 9.5 out of 10">9.5</span>
+                            <span class="rating-badge">9.5</span>
                             <span class="rating-text">Exceptional</span>
                             <span class="rating-count">(456 reviews)</span>
                         </div>

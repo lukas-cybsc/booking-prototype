@@ -212,13 +212,249 @@ document.addEventListener('DOMContentLoaded', function() {
     
     /* ============================================
        Dynamic Filter Updates with Security
-       Demonstrates skeleton loading (Frame 8)
+       ACTUALLY FILTERS PROPERTY CARDS
        ============================================ */
     const filterCheckboxes = document.querySelectorAll('.filter-option input[type="checkbox"]');
     
     // Whitelist of valid filter types
     const validFilterTypes = ['price', 'stars', 'rating', 'cancellation', 'type', 'amenity', 'bed', 'meal', 'bathroom', 'features', 'accessibility'];
     
+    /**
+     * Applies filters to property cards and shows/hides based on criteria
+     */
+    function applyFilters() {
+        // Get all checked filters organized by type
+        const activeFilters = {
+            price: [],
+            stars: [],
+            rating: [],
+            cancellation: [],
+            type: [],
+            amenity: [],
+            bed: [],
+            meal: [],
+            bathroom: [],
+            features: [],
+            accessibility: []
+        };
+        
+        // Collect all active filters
+        filterCheckboxes.forEach(function(checkbox) {
+            if (checkbox.checked) {
+                const filterType = checkbox.getAttribute('data-filter-type');
+                const filterValue = checkbox.value;
+                
+                if (validFilterTypes.includes(filterType)) {
+                    activeFilters[filterType].push(filterValue);
+                }
+            }
+        });
+        
+        // Get all property cards
+        const propertyCards = document.querySelectorAll('.property-card');
+        let visibleCount = 0;
+        
+        // Filter each property card
+        propertyCards.forEach(function(card) {
+            let shouldShow = true;
+            
+            // Check price filters
+            if (activeFilters.price.length > 0) {
+                const price = parseFloat(card.getAttribute('data-price'));
+                let priceMatch = false;
+                
+                activeFilters.price.forEach(function(priceRange) {
+                    if (priceRange === 'low' && price < 100) priceMatch = true;
+                    if (priceRange === 'mid' && price >= 100 && price <= 200) priceMatch = true;
+                    if (priceRange === 'high' && price > 200) priceMatch = true;
+                });
+                
+                if (!priceMatch) shouldShow = false;
+            }
+            
+            // Check star rating filters
+            if (activeFilters.stars.length > 0) {
+                const stars = parseInt(card.getAttribute('data-stars'));
+                if (!activeFilters.stars.includes(stars.toString())) {
+                    shouldShow = false;
+                }
+            }
+            
+            // Check guest review score filters
+            if (activeFilters.rating.length > 0) {
+                const rating = parseFloat(card.getAttribute('data-rating'));
+                let ratingMatch = false;
+                
+                activeFilters.rating.forEach(function(minRating) {
+                    if (rating >= parseFloat(minRating)) {
+                        ratingMatch = true;
+                    }
+                });
+                
+                if (!ratingMatch) shouldShow = false;
+            }
+            
+            // Check cancellation filters
+            if (activeFilters.cancellation.length > 0) {
+                const cancellation = card.getAttribute('data-cancellation');
+                if (!activeFilters.cancellation.includes(cancellation)) {
+                    shouldShow = false;
+                }
+            }
+            
+            // Check property type filters
+            if (activeFilters.type.length > 0) {
+                const type = card.getAttribute('data-type');
+                if (!activeFilters.type.includes(type)) {
+                    shouldShow = false;
+                }
+            }
+            
+            // Check amenities filters
+            if (activeFilters.amenity.length > 0) {
+                const amenities = card.getAttribute('data-amenities').split(',');
+                let amenityMatch = false;
+                
+                activeFilters.amenity.forEach(function(amenity) {
+                    if (amenities.includes(amenity)) {
+                        amenityMatch = true;
+                    }
+                });
+                
+                if (!amenityMatch) shouldShow = false;
+            }
+            
+            // Check bed preference filters
+            if (activeFilters.bed.length > 0) {
+                const bed = card.getAttribute('data-bed');
+                if (!activeFilters.bed.includes(bed)) {
+                    shouldShow = false;
+                }
+            }
+            
+            // Check meal filters
+            if (activeFilters.meal.length > 0) {
+                const meal = card.getAttribute('data-meal');
+                if (!activeFilters.meal.includes(meal)) {
+                    shouldShow = false;
+                }
+            }
+            
+            // Check bathroom filters
+            if (activeFilters.bathroom.length > 0) {
+                const bathroom = card.getAttribute('data-bathroom');
+                if (!activeFilters.bathroom.includes(bathroom)) {
+                    shouldShow = false;
+                }
+            }
+            
+            // Check room features filters
+            if (activeFilters.features.length > 0) {
+                const features = card.getAttribute('data-features').split(',');
+                let featureMatch = false;
+                
+                activeFilters.features.forEach(function(feature) {
+                    if (features.includes(feature)) {
+                        featureMatch = true;
+                    }
+                });
+                
+                if (!featureMatch) shouldShow = false;
+            }
+            
+            // Check accessibility filters
+            if (activeFilters.accessibility.length > 0) {
+                const accessibility = card.getAttribute('data-accessibility');
+                let accessMatch = false;
+                
+                activeFilters.accessibility.forEach(function(access) {
+                    if (accessibility.includes(access)) {
+                        accessMatch = true;
+                    }
+                });
+                
+                if (!accessMatch) shouldShow = false;
+            }
+            
+            // Show or hide the card with animation
+            if (shouldShow) {
+                card.style.display = 'grid';
+                card.style.animation = 'fadeIn 0.3s ease-in';
+                visibleCount++;
+            } else {
+                card.style.display = 'none';
+            }
+        });
+        
+        // Update results count
+        const resultsHeader = document.getElementById('results-count');
+        if (resultsHeader) {
+            safeTextUpdate(resultsHeader, `Sydney: ${visibleCount} properties found`);
+        }
+        
+        // Show "no results" message if needed
+        showNoResultsMessage(visibleCount);
+        
+        return visibleCount;
+    }
+    
+    /**
+     * Shows/hides no results message
+     */
+    function showNoResultsMessage(count) {
+        let noResultsMsg = document.getElementById('no-results-message');
+        
+        if (count === 0) {
+            if (!noResultsMsg) {
+                noResultsMsg = document.createElement('div');
+                noResultsMsg.id = 'no-results-message';
+                noResultsMsg.className = 'no-results-message';
+                noResultsMsg.innerHTML = `
+                    <div class="no-results-content">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="64" height="64" fill="currentColor" viewBox="0 0 16 16">
+                            <path d="M8 15A7 7 0 1 1 8 1a7 7 0 0 1 0 14zm0 1A8 8 0 1 0 8 0a8 8 0 0 0 0 16z"/>
+                            <path d="M4.285 12.433a.5.5 0 0 0 .683-.183A3.498 3.498 0 0 1 8 10.5c1.295 0 2.426.703 3.032 1.75a.5.5 0 0 0 .866-.5A4.498 4.498 0 0 0 8 9.5a4.5 4.5 0 0 0-3.898 2.25.5.5 0 0 0 .183.683z"/>
+                        </svg>
+                        <h3>No properties found</h3>
+                        <p>Try adjusting your filters to see more results</p>
+                        <button class="btn-clear-filters">Clear all filters</button>
+                    </div>
+                `;
+                
+                const propertiesGrid = document.querySelector('.properties-grid');
+                if (propertiesGrid) {
+                    propertiesGrid.appendChild(noResultsMsg);
+                    
+                    // Add click handler for clear filters button
+                    const clearBtn = noResultsMsg.querySelector('.btn-clear-filters');
+                    if (clearBtn) {
+                        clearBtn.addEventListener('click', clearAllFilters);
+                    }
+                }
+            }
+            noResultsMsg.style.display = 'flex';
+        } else {
+            if (noResultsMsg) {
+                noResultsMsg.style.display = 'none';
+            }
+        }
+    }
+    
+    /**
+     * Clears all active filters
+     */
+    function clearAllFilters() {
+        filterCheckboxes.forEach(function(checkbox) {
+            checkbox.checked = false;
+        });
+        applyFilters();
+        
+        if (liveRegion) {
+            safeTextUpdate(liveRegion, 'All filters cleared. Showing all properties.');
+        }
+    }
+    
+    // Attach filter change handlers
     filterCheckboxes.forEach(function(checkbox) {
         checkbox.addEventListener('change', function() {
             // Validate filter type
@@ -242,7 +478,7 @@ document.addEventListener('DOMContentLoaded', function() {
             }
             
             // Get all checked filters for screen reader announcement
-            const activeFilters = Array.from(filterCheckboxes)
+            const activeFilterNames = Array.from(filterCheckboxes)
                 .filter(cb => cb.checked)
                 .map(cb => {
                     const label = cb.labels && cb.labels[0];
@@ -252,8 +488,8 @@ document.addEventListener('DOMContentLoaded', function() {
             
             // Announce to screen readers (WCAG 4.1.3)
             if (liveRegion) {
-                if (activeFilters.length > 0) {
-                    safeTextUpdate(liveRegion, `Filtering results by: ${activeFilters.join(', ')}`);
+                if (activeFilterNames.length > 0) {
+                    safeTextUpdate(liveRegion, `Filtering results by: ${activeFilterNames.join(', ')}`);
                 } else {
                     safeTextUpdate(liveRegion, 'All filters cleared');
                 }
@@ -267,24 +503,19 @@ document.addEventListener('DOMContentLoaded', function() {
                 timestamp: new Date().toISOString()
             });
             
-            // Simulate AJAX filter update
+            // Apply filters after short delay
             setTimeout(function() {
+                const visibleCount = applyFilters();
+                
                 if (skeletonLoader) {
                     skeletonLoader.classList.remove('active');
                 }
                 
-                // Update results count (simulated) - with input bounds
-                const randomCount = Math.floor(Math.random() * 300) + 200;
-                const resultsHeader = document.getElementById('results-count');
-                if (resultsHeader) {
-                    safeTextUpdate(resultsHeader, `Sydney: ${randomCount} properties found`);
-                }
-                
                 // Announce completion to screen readers
                 if (liveRegion) {
-                    safeTextUpdate(liveRegion, `Filters applied. ${randomCount} properties found.`);
+                    safeTextUpdate(liveRegion, `Filters applied. ${visibleCount} properties found.`);
                 }
-            }, 800); // 800ms simulated filter processing
+            }, 400); // 400ms for smooth transition
         });
     });
     
@@ -609,5 +840,5 @@ document.addEventListener('DOMContentLoaded', function() {
 });
 
 /* ============================================
-   End of script.js (Secured Version)
+   End of script.js (Secured Version) 0.4
    ============================================ */
