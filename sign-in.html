@@ -1,0 +1,506 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Sign in to your Booking.com account to manage your bookings">
+    <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline' https://code.jquery.com https://cdn.jsdelivr.net; style-src 'self' 'unsafe-inline' https://cdn.jsdelivr.net; img-src 'self' https: data:; font-src 'self' https://cdn.jsdelivr.net;">
+    <title>Sign In | Booking.com</title>
+    
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    
+    <!-- External CSS - Using same styles.css for consistency -->
+    <link rel="stylesheet" href="styles.css">
+    
+    <style>
+        /* Additional styles specific to sign-in page that complement styles.css */
+        .signin-hero {
+            background: linear-gradient(135deg, var(--bui-color-primary-dark) 0%, var(--bui-color-primary) 100%);
+            color: white;
+            padding: 48px var(--bui-spacing-4);
+            text-align: center;
+        }
+        
+        .signin-hero h1 {
+            font-size: 40px;
+            margin-bottom: 12px;
+            font-weight: 700;
+        }
+        
+        .signin-hero p {
+            font-size: 18px;
+            margin: 0;
+        }
+        
+        .signin-container {
+            max-width: 480px;
+            margin: -40px auto 80px;
+            padding: 0 var(--bui-spacing-4);
+        }
+        
+        .signin-card {
+            background: var(--bui-color-white);
+            border-radius: 8px;
+            box-shadow: 0 4px 16px rgba(0,0,0,0.15);
+            padding: 40px;
+            border: 4px solid var(--bui-color-complement);
+        }
+        
+        .signin-card h2 {
+            color: var(--bui-color-primary);
+            margin-bottom: var(--bui-spacing-4);
+            text-align: center;
+            font-size: 28px;
+            font-weight: 700;
+        }
+        
+        .form-label {
+            font-weight: 600;
+            color: var(--bui-color-text);
+            margin-bottom: var(--bui-spacing-2);
+            font-size: 14px;
+        }
+        
+        .form-control {
+            padding: 12px;
+            border: 2px solid #767676;
+            border-radius: var(--bui-border-radius);
+            font-size: 16px;
+            font-family: inherit;
+            transition: border-color 0.3s, box-shadow 0.3s;
+        }
+        
+        .form-control:focus {
+            border-color: var(--bui-color-primary);
+            box-shadow: 0 0 0 3px rgba(0, 53, 128, 0.25);
+            outline: none;
+        }
+        
+        .form-control.is-invalid {
+            border-color: var(--bui-color-destructive);
+            border-width: 2px;
+        }
+        
+        .form-control.is-invalid:focus {
+            box-shadow: 0 0 0 3px rgba(204, 0, 0, 0.25);
+        }
+        
+        .error-message {
+            color: var(--bui-color-destructive);
+            font-size: 14px;
+            font-weight: 600;
+            margin-top: 6px;
+            display: none;
+        }
+        
+        .password-toggle {
+            position: relative;
+        }
+        
+        .password-toggle-btn {
+            position: absolute;
+            right: 12px;
+            top: 50%;
+            transform: translateY(-50%);
+            background: none;
+            border: 2px solid transparent;
+            cursor: pointer;
+            padding: 6px;
+            color: var(--bui-color-text);
+            font-size: 20px;
+            border-radius: 4px;
+            transition: all 0.3s;
+        }
+        
+        .password-toggle-btn:hover {
+            color: var(--bui-color-primary);
+            background-color: rgba(0, 53, 128, 0.1);
+        }
+        
+        .password-toggle-btn:focus {
+            outline: 3px solid var(--bui-color-primary);
+            outline-offset: 2px;
+            border-color: var(--bui-color-primary);
+        }
+        
+        .btn-signin {
+            background-color: var(--bui-color-primary);
+            color: white;
+            border: none;
+            padding: 14px;
+            border-radius: var(--bui-border-radius);
+            font-size: 16px;
+            font-weight: 600;
+            width: 100%;
+            margin-top: var(--bui-spacing-4);
+            transition: background-color 0.3s;
+            cursor: pointer;
+            min-height: 48px;
+        }
+        
+        .btn-signin:hover:not(:disabled) {
+            background-color: var(--bui-color-primary-dark);
+        }
+        
+        .btn-signin:focus {
+            outline: 3px solid var(--bui-color-complement);
+            outline-offset: 2px;
+        }
+        
+        .btn-signin:disabled {
+            background-color: #999999;
+            cursor: not-allowed;
+            opacity: 0.6;
+        }
+        
+        .divider {
+            text-align: center;
+            margin: var(--bui-spacing-4) 0;
+            position: relative;
+        }
+        
+        .divider::before {
+            content: '';
+            position: absolute;
+            left: 0;
+            top: 50%;
+            width: 100%;
+            height: 1px;
+            background: #CCCCCC;
+        }
+        
+        .divider span {
+            background: var(--bui-color-white);
+            padding: 0 var(--bui-spacing-3);
+            position: relative;
+            color: var(--bui-color-text);
+            font-size: 14px;
+            font-weight: 600;
+        }
+        
+        .social-signin {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+        
+        .btn-social {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 12px;
+            padding: 12px;
+            border: 2px solid #767676;
+            border-radius: var(--bui-border-radius);
+            background: var(--bui-color-white);
+            color: var(--bui-color-text);
+            font-weight: 600;
+            font-size: 16px;
+            transition: all 0.3s;
+            cursor: pointer;
+            min-height: 48px;
+        }
+        
+        .btn-social:hover {
+            border-color: var(--bui-color-primary);
+            background: var(--bui-color-background);
+        }
+        
+        .btn-social:focus {
+            outline: 3px solid var(--bui-color-primary);
+            outline-offset: 2px;
+            border-color: var(--bui-color-primary);
+        }
+        
+        .signup-link {
+            text-align: center;
+            margin-top: var(--bui-spacing-4);
+            color: var(--bui-color-text);
+            font-size: 14px;
+        }
+        
+        .signup-link a {
+            color: var(--bui-color-primary);
+            font-weight: 600;
+            text-decoration: underline;
+        }
+        
+        .signup-link a:hover {
+            color: var(--bui-color-primary-dark);
+        }
+        
+        .signup-link a:focus {
+            outline: 3px solid var(--bui-color-primary);
+            outline-offset: 2px;
+            border-radius: 2px;
+        }
+        
+        .password-hint {
+            font-size: 13px;
+            color: #595959;
+            margin-top: 6px;
+        }
+        
+        .remember-forgot {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-top: var(--bui-spacing-3);
+            font-size: 14px;
+        }
+        
+        .form-check-input {
+            width: 20px;
+            height: 20px;
+            margin-right: 8px;
+            cursor: pointer;
+            border: 2px solid #767676;
+        }
+        
+        .form-check-input:focus {
+            border-color: var(--bui-color-primary);
+            box-shadow: 0 0 0 3px rgba(0, 53, 128, 0.25);
+        }
+        
+        .form-check-input:checked {
+            background-color: var(--bui-color-primary);
+            border-color: var(--bui-color-primary);
+        }
+        
+        .form-check-label {
+            cursor: pointer;
+            color: var(--bui-color-text);
+            font-weight: 500;
+        }
+        
+        .forgot-link {
+            color: var(--bui-color-primary);
+            text-decoration: underline;
+            font-weight: 600;
+        }
+        
+        .forgot-link:hover {
+            color: var(--bui-color-primary-dark);
+        }
+        
+        .forgot-link:focus {
+            outline: 3px solid var(--bui-color-primary);
+            outline-offset: 2px;
+            border-radius: 2px;
+        }
+        
+        .text-danger {
+            color: var(--bui-color-destructive);
+        }
+        
+        footer {
+            background: var(--bui-color-primary);
+            color: white;
+            padding: 40px var(--bui-spacing-4);
+            text-align: center;
+            margin-top: 60px;
+        }
+        
+        footer p {
+            margin: 0;
+        }
+        
+        footer p:first-child {
+            font-size: 14px;
+            margin-bottom: 8px;
+        }
+        
+        footer p:last-child {
+            font-size: 12px;
+            opacity: 0.9;
+        }
+        
+        /* Loading spinner */
+        .spinner-border-sm {
+            width: 1rem;
+            height: 1rem;
+            border-width: 0.2em;
+            vertical-align: middle;
+        }
+        
+        /* Focus visible enhancement */
+        .focus-visible {
+            outline: 3px solid var(--bui-color-primary);
+            outline-offset: 2px;
+        }
+        
+        /* Responsive adjustments */
+        @media (max-width: 768px) {
+            .signin-hero h1 {
+                font-size: 32px;
+            }
+            
+            .signin-card {
+                padding: var(--bui-spacing-4);
+            }
+            
+            .remember-forgot {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: var(--bui-spacing-2);
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Skip Link for Accessibility (WCAG 2.4.1) -->
+    <a href="#main-content" class="skip-link">Skip to main content</a>
+    
+    <!-- ARIA Live Region for Screen Reader Announcements -->
+    <div class="live-region" role="status" aria-live="polite" aria-atomic="true" id="live-region"></div>
+    
+    <!-- Header - Uses styles from styles.css -->
+    <header>
+        <div class="header-container">
+            <a href="index.html" class="logo" aria-label="Booking.com homepage">Booking.com</a>
+            <nav aria-label="Main navigation">
+                <ul class="header-nav">
+                    <li><a href="flights.html">Flights</a></li>
+                    <li><a href="car-rentals.html">Car rentals</a></li>
+                    <li><a href="sign-in.html" aria-current="page" style="font-weight: 600; border-bottom: 2px solid white;">Sign in</a></li>
+                    <li><a href="contact.html">Contact Us</a></li>
+                </ul>
+            </nav>
+        </div>
+    </header>
+    
+    <!-- Hero Section -->
+    <section class="signin-hero" role="banner">
+        <div class="container">
+            <h1>Sign in to your account</h1>
+            <p>Access your bookings and saved properties</p>
+        </div>
+    </section>
+    
+    <!-- Sign In Form -->
+    <main id="main-content">
+        <div class="signin-container">
+            <div class="signin-card">
+                <h2>Welcome back</h2>
+                
+                <form id="signinForm" novalidate>
+                    <!-- Email -->
+                    <div class="mb-3 mt-4">
+                        <label for="email" class="form-label">
+                            Email address <span class="text-danger" aria-label="required">*</span>
+                        </label>
+                        <input 
+                            type="email" 
+                            class="form-control" 
+                            id="email" 
+                            name="email"
+                            placeholder="Enter your email"
+                            required
+                            aria-required="true"
+                            aria-describedby="email-error"
+                            autocomplete="email"
+                            maxlength="100"
+                        >
+                        <div class="error-message" id="email-error" role="alert"></div>
+                    </div>
+                    
+                    <!-- Password -->
+                    <div class="mb-3">
+                        <label for="password" class="form-label">
+                            Password <span class="text-danger" aria-label="required">*</span>
+                        </label>
+                        <div class="password-toggle">
+                            <input 
+                                type="password" 
+                                class="form-control" 
+                                id="password" 
+                                name="password"
+                                placeholder="Enter your password"
+                                required
+                                aria-required="true"
+                                aria-describedby="password-error password-hint"
+                                autocomplete="current-password"
+                                maxlength="128"
+                            >
+                            <button 
+                                type="button" 
+                                class="password-toggle-btn" 
+                                id="togglePassword"
+                                aria-label="Show password"
+                            >
+                                👁️
+                            </button>
+                        </div>
+                        <div class="error-message" id="password-error" role="alert"></div>
+                        <div class="password-hint" id="password-hint">Use at least 8 characters with letters and numbers</div>
+                    </div>
+                    
+                    <!-- Remember Me & Forgot Password -->
+                    <div class="remember-forgot">
+                        <div class="form-check">
+                            <input class="form-check-input" type="checkbox" id="rememberMe" name="rememberMe">
+                            <label class="form-check-label" for="rememberMe">
+                                Remember me
+                            </label>
+                        </div>
+                        <a href="#" class="forgot-link">Forgot password?</a>
+                    </div>
+                    
+                    <!-- Sign In Button -->
+                    <button type="submit" class="btn-signin" id="submitBtn">
+                        Sign in
+                    </button>
+                </form>
+                
+                <!-- Divider -->
+                <div class="divider">
+                    <span>or continue with</span>
+                </div>
+                
+                <!-- Social Sign In -->
+                <div class="social-signin">
+                    <button type="button" class="btn-social" aria-label="Sign in with Google">
+                        <svg width="20" height="20" viewBox="0 0 20 20" fill="none" aria-hidden="true">
+                            <path d="M19.6 10.227c0-.709-.064-1.39-.182-2.045H10v3.868h5.382a4.6 4.6 0 01-1.996 3.018v2.51h3.232c1.891-1.742 2.982-4.305 2.982-7.35z" fill="#4285F4"/>
+                            <path d="M10 20c2.7 0 4.964-.895 6.618-2.423l-3.232-2.509c-.895.6-2.04.955-3.386.955-2.605 0-4.81-1.76-5.595-4.123H1.064v2.59A9.996 9.996 0 0010 20z" fill="#34A853"/>
+                            <path d="M4.405 11.9c-.2-.6-.314-1.24-.314-1.9 0-.66.114-1.3.314-1.9V5.51H1.064A9.996 9.996 0 000 10c0 1.614.386 3.14 1.064 4.49l3.34-2.59z" fill="#FBBC05"/>
+                            <path d="M10 3.977c1.468 0 2.786.505 3.823 1.496l2.868-2.868C14.959.99 12.695 0 10 0 6.09 0 2.71 2.24 1.064 5.51l3.34 2.59C5.19 5.736 7.395 3.977 10 3.977z" fill="#EA4335"/>
+                        </svg>
+                        <span>Google</span>
+                    </button>
+                    
+                    <button type="button" class="btn-social" aria-label="Sign in with Facebook">
+                        <svg width="20" height="20" viewBox="0 0 20 20" fill="#1877F2" aria-hidden="true">
+                            <path d="M20 10c0-5.523-4.477-10-10-10S0 4.477 0 10c0 4.991 3.657 9.128 8.438 9.878v-6.987h-2.54V10h2.54V7.797c0-2.506 1.492-3.89 3.777-3.89 1.094 0 2.238.195 2.238.195v2.46h-1.26c-1.243 0-1.63.771-1.63 1.562V10h2.773l-.443 2.89h-2.33v6.988C16.343 19.128 20 14.991 20 10z"/>
+                        </svg>
+                        <span>Facebook</span>
+                    </button>
+                </div>
+                
+                <!-- Sign Up Link -->
+                <div class="signup-link">
+                    Don't have an account? <a href="signup.html">Sign up</a>
+                </div>
+            </div>
+        </div>
+    </main>
+    
+    <!-- Footer -->
+    <footer>
+        <div class="container">
+            <p>© 2025 Booking.com. All rights reserved.</p>
+            <p>Your trusted travel partner worldwide</p>
+        </div>
+    </footer>
+    
+    <!-- jQuery -->
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    
+    <!-- Bootstrap JS -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    
+    <!-- Sign In Script -->
+    <script src="sign-in.js"></script>
+</body>
+</html>

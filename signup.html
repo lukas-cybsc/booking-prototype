@@ -1,0 +1,732 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Create your Booking.com account to start booking accommodations">
+    <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline' https://code.jquery.com https://cdn.jsdelivr.net; style-src 'self' 'unsafe-inline' https://cdn.jsdelivr.net; img-src 'self' https: data:; font-src 'self' https://cdn.jsdelivr.net;">
+    <title>Sign Up | Booking.com</title>
+    
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    
+    <!-- External CSS - Using same styles.css for consistency -->
+    <link rel="stylesheet" href="styles.css">
+    
+    <style>
+        /* Additional styles specific to sign-up page that complement styles.css */
+        .signup-hero {
+            background: linear-gradient(135deg, var(--bui-color-primary-dark) 0%, var(--bui-color-primary) 100%);
+            color: white;
+            padding: 80px var(--bui-spacing-4) 100px;
+            text-align: center;
+        }
+        
+        .signup-hero h1 {
+            font-size: 40px;
+            margin-bottom: var(--bui-spacing-3);
+            font-weight: 700;
+        }
+        
+        .signup-hero p {
+            font-size: 18px;
+            margin: 0;
+        }
+        
+        .signup-container {
+            max-width: 600px;
+            margin: -60px auto 80px;
+            padding: 0 var(--bui-spacing-4);
+        }
+        
+        .signup-card {
+            background: var(--bui-color-white);
+            border-radius: 8px;
+            box-shadow: 0 4px 16px rgba(0,0,0,0.15);
+            padding: 40px;
+            border: 4px solid var(--bui-color-complement);
+        }
+        
+        .signup-card h2 {
+            color: var(--bui-color-primary);
+            margin-bottom: var(--bui-spacing-4);
+            text-align: center;
+            font-size: 28px;
+            font-weight: 700;
+        }
+        
+        .form-label {
+            font-weight: 600;
+            color: var(--bui-color-text);
+            margin-bottom: var(--bui-spacing-2);
+            font-size: 14px;
+        }
+        
+        .form-control {
+            padding: 12px;
+            border: 2px solid #767676;
+            border-radius: var(--bui-border-radius);
+            font-size: 16px;
+            font-family: inherit;
+            transition: border-color 0.3s, box-shadow 0.3s;
+        }
+        
+        .form-control:focus {
+            border-color: var(--bui-color-primary);
+            box-shadow: 0 0 0 3px rgba(0, 53, 128, 0.25);
+            outline: none;
+        }
+        
+        .form-control.is-invalid {
+            border-color: var(--bui-color-destructive);
+            border-width: 2px;
+        }
+        
+        .form-control.is-invalid:focus {
+            box-shadow: 0 0 0 3px rgba(204, 0, 0, 0.25);
+        }
+        
+        .form-control.is-valid {
+            border-color: var(--bui-color-success);
+            border-width: 2px;
+        }
+        
+        .form-control.is-valid:focus {
+            box-shadow: 0 0 0 3px rgba(0, 130, 52, 0.25);
+        }
+        
+        .error-message {
+            color: var(--bui-color-destructive);
+            font-size: 14px;
+            font-weight: 600;
+            margin-top: 6px;
+            display: none;
+        }
+        
+        .success-message {
+            color: var(--bui-color-success);
+            font-size: 14px;
+            font-weight: 600;
+            margin-top: 6px;
+            display: none;
+        }
+        
+        .password-toggle {
+            position: relative;
+        }
+        
+        .password-toggle-btn {
+            position: absolute;
+            right: 12px;
+            top: 50%;
+            transform: translateY(-50%);
+            background: none;
+            border: 2px solid transparent;
+            cursor: pointer;
+            padding: 6px;
+            color: var(--bui-color-text);
+            font-size: 20px;
+            border-radius: 4px;
+            transition: all 0.3s;
+        }
+        
+        .password-toggle-btn:hover {
+            color: var(--bui-color-primary);
+            background-color: rgba(0, 53, 128, 0.1);
+        }
+        
+        .password-toggle-btn:focus {
+            outline: 3px solid var(--bui-color-primary);
+            outline-offset: 2px;
+            border-color: var(--bui-color-primary);
+        }
+        
+        .password-strength {
+            height: 4px;
+            background: #E0E0E0;
+            border-radius: 2px;
+            margin-top: 8px;
+            overflow: hidden;
+        }
+        
+        .password-strength-bar {
+            height: 100%;
+            width: 0;
+            transition: width 0.3s, background-color 0.3s;
+        }
+        
+        .password-strength-bar.weak {
+            width: 33%;
+            background-color: var(--bui-color-destructive);
+        }
+        
+        .password-strength-bar.medium {
+            width: 66%;
+            background-color: #FFA500;
+        }
+        
+        .password-strength-bar.strong {
+            width: 100%;
+            background-color: var(--bui-color-success);
+        }
+        
+        .password-hint {
+            font-size: 13px;
+            color: #595959;
+            margin-top: 6px;
+        }
+        
+        .password-requirements {
+            font-size: 13px;
+            margin-top: 12px;
+            padding: 12px;
+            background: var(--bui-color-background);
+            border-radius: var(--bui-border-radius);
+            border: 1px solid #E0E0E0;
+            display: none;
+        }
+        
+        .password-requirements.show {
+            display: block;
+        }
+        
+        .requirement {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            margin-bottom: 6px;
+            color: #595959;
+        }
+        
+        .requirement:last-child {
+            margin-bottom: 0;
+        }
+        
+        .requirement.met {
+            color: var(--bui-color-success);
+            font-weight: 600;
+        }
+        
+        .requirement .icon {
+            width: 16px;
+            height: 16px;
+            font-weight: bold;
+        }
+        
+        .btn-signup {
+            background-color: var(--bui-color-primary);
+            color: white;
+            border: none;
+            padding: 14px;
+            border-radius: var(--bui-border-radius);
+            font-size: 16px;
+            font-weight: 600;
+            width: 100%;
+            margin-top: var(--bui-spacing-4);
+            transition: background-color 0.3s;
+            cursor: pointer;
+            min-height: 48px;
+        }
+        
+        .btn-signup:hover:not(:disabled) {
+            background-color: var(--bui-color-primary-dark);
+        }
+        
+        .btn-signup:focus {
+            outline: 3px solid var(--bui-color-complement);
+            outline-offset: 2px;
+        }
+        
+        .btn-signup:disabled {
+            background-color: #999999;
+            cursor: not-allowed;
+            opacity: 0.6;
+        }
+        
+        .divider {
+            text-align: center;
+            margin: var(--bui-spacing-4) 0;
+            position: relative;
+        }
+        
+        .divider::before {
+            content: '';
+            position: absolute;
+            left: 0;
+            top: 50%;
+            width: 100%;
+            height: 1px;
+            background: #CCCCCC;
+        }
+        
+        .divider span {
+            background: var(--bui-color-white);
+            padding: 0 var(--bui-spacing-3);
+            position: relative;
+            color: var(--bui-color-text);
+            font-size: 14px;
+            font-weight: 600;
+        }
+        
+        .social-signup {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+        
+        .btn-social {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 12px;
+            padding: 12px;
+            border: 2px solid #767676;
+            border-radius: var(--bui-border-radius);
+            background: var(--bui-color-white);
+            color: var(--bui-color-text);
+            font-weight: 600;
+            font-size: 16px;
+            transition: all 0.3s;
+            cursor: pointer;
+            min-height: 48px;
+        }
+        
+        .btn-social:hover {
+            border-color: var(--bui-color-primary);
+            background: var(--bui-color-background);
+        }
+        
+        .btn-social:focus {
+            outline: 3px solid var(--bui-color-primary);
+            outline-offset: 2px;
+            border-color: var(--bui-color-primary);
+        }
+        
+        .signin-link {
+            text-align: center;
+            margin-top: var(--bui-spacing-4);
+            color: var(--bui-color-text);
+            font-size: 14px;
+        }
+        
+        .signin-link a {
+            color: var(--bui-color-primary);
+            font-weight: 600;
+            text-decoration: underline;
+        }
+        
+        .signin-link a:hover {
+            color: var(--bui-color-primary-dark);
+        }
+        
+        .signin-link a:focus {
+            outline: 3px solid var(--bui-color-primary);
+            outline-offset: 2px;
+            border-radius: 2px;
+        }
+        
+        .terms-checkbox {
+            margin-top: var(--bui-spacing-3);
+        }
+        
+        .form-check-input {
+            width: 20px;
+            height: 20px;
+            margin-right: 8px;
+            cursor: pointer;
+            border: 2px solid #767676;
+        }
+        
+        .form-check-input:focus {
+            border-color: var(--bui-color-primary);
+            box-shadow: 0 0 0 3px rgba(0, 53, 128, 0.25);
+        }
+        
+        .form-check-input:checked {
+            background-color: var(--bui-color-primary);
+            border-color: var(--bui-color-primary);
+        }
+        
+        .form-check-label {
+            cursor: pointer;
+            color: var(--bui-color-text);
+            font-size: 14px;
+            font-weight: 500;
+        }
+        
+        .terms-checkbox a {
+            color: var(--bui-color-primary);
+            text-decoration: underline;
+            font-weight: 600;
+        }
+        
+        .terms-checkbox a:hover {
+            color: var(--bui-color-primary-dark);
+        }
+        
+        .terms-checkbox a:focus {
+            outline: 3px solid var(--bui-color-primary);
+            outline-offset: 2px;
+            border-radius: 2px;
+        }
+        
+        .text-danger {
+            color: var(--bui-color-destructive);
+        }
+        
+        /* Footer styles - using styles from styles.css footer element */
+        footer {
+            background: var(--bui-color-primary);
+            color: white;
+            padding: 40px var(--bui-spacing-4);
+            text-align: center;
+            margin-top: 60px;
+        }
+        
+        footer p {
+            margin: 0;
+        }
+        
+        footer p:first-child {
+            font-size: 14px;
+            margin-bottom: 8px;
+        }
+        
+        footer p:last-child {
+            font-size: 12px;
+            opacity: 0.9;
+        }
+        
+        /* Footer styles - using styles from styles.css footer element */
+        footer {
+            background: var(--bui-color-primary);
+            color: white;
+            padding: 40px var(--bui-spacing-4);
+            text-align: center;
+            margin-top: 60px;
+        }
+        
+        footer p {
+            margin: 0;
+        }
+        
+        footer p:first-child {
+            font-size: 14px;
+            margin-bottom: 8px;
+        }
+        
+        footer p:last-child {
+            font-size: 12px;
+            opacity: 0.9;
+        }
+        
+        /* Loading spinner */
+        .spinner-border-sm {
+            width: 1rem;
+            height: 1rem;
+            border-width: 0.2em;
+            vertical-align: middle;
+        }
+        
+        /* Focus visible enhancement */
+        .focus-visible {
+            outline: 3px solid var(--bui-color-primary);
+            outline-offset: 2px;
+        }
+        
+        /* Responsive adjustments */
+        @media (max-width: 768px) {
+            .signup-hero h1 {
+                font-size: 32px;
+            }
+            
+            .signup-card {
+                padding: var(--bui-spacing-4);
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Skip Link for Accessibility (WCAG 2.4.1) -->
+    <a href="#main-content" class="skip-link">Skip to main content</a>
+    
+    <!-- ARIA Live Region for Screen Reader Announcements -->
+    <div class="live-region" role="status" aria-live="polite" aria-atomic="true" id="live-region"></div>
+    
+    <!-- Header - Uses styles from styles.css -->
+    <header>
+        <div class="header-container">
+            <a href="index.html" class="logo" aria-label="Booking.com homepage">Booking.com</a>
+            <nav aria-label="Main navigation">
+                <ul class="header-nav">
+                    <li><a href="flights.html">Flights</a></li>
+                    <li><a href="car-rentals.html">Car rentals</a></li>
+                    <li><a href="sign-in.html">Sign in</a></li>
+                    <li><a href="contact.html">Contact Us</a></li>
+                </ul>
+            </nav>
+        </div>
+    </header>
+    
+    <!-- Hero Section -->
+    <section class="signup-hero" role="banner">
+        <div class="container">
+            <h1>Create your account</h1>
+            <p>Join millions of travelers worldwide</p>
+        </div>
+    </section>
+    
+    <!-- Sign Up Form -->
+    <main id="main-content">
+        <div class="signup-container">
+            <div class="signup-card">
+                <h2>Sign up now</h2>
+                
+                <form id="signupForm" novalidate>
+                    <!-- First Name & Last Name -->
+                    <div class="row">
+                        <div class="col-md-6 mb-3">
+                            <label for="firstName" class="form-label">
+                                First Name <span class="text-danger" aria-label="required">*</span>
+                            </label>
+                            <input 
+                                type="text" 
+                                class="form-control" 
+                                id="firstName" 
+                                name="firstName"
+                                placeholder="Enter first name"
+                                required
+                                aria-required="true"
+                                aria-describedby="firstName-error"
+                                autocomplete="given-name"
+                                maxlength="50"
+                            >
+                            <div class="error-message" id="firstName-error" role="alert"></div>
+                        </div>
+                        
+                        <div class="col-md-6 mb-3">
+                            <label for="lastName" class="form-label">
+                                Last Name <span class="text-danger" aria-label="required">*</span>
+                            </label>
+                            <input 
+                                type="text" 
+                                class="form-control" 
+                                id="lastName" 
+                                name="lastName"
+                                placeholder="Enter last name"
+                                required
+                                aria-required="true"
+                                aria-describedby="lastName-error"
+                                autocomplete="family-name"
+                                maxlength="50"
+                            >
+                            <div class="error-message" id="lastName-error" role="alert"></div>
+                        </div>
+                    </div>
+                    
+                    <!-- Email -->
+                    <div class="mb-3">
+                        <label for="email" class="form-label">
+                            Email address <span class="text-danger" aria-label="required">*</span>
+                        </label>
+                        <input 
+                            type="email" 
+                            class="form-control" 
+                            id="email" 
+                            name="email"
+                            placeholder="Enter your email"
+                            required
+                            aria-required="true"
+                            aria-describedby="email-error email-success"
+                            autocomplete="email"
+                            maxlength="100"
+                        >
+                        <div class="error-message" id="email-error" role="alert"></div>
+                        <div class="success-message" id="email-success">✓ Valid email format</div>
+                    </div>
+                    
+                    <!-- Phone -->
+                    <div class="mb-3">
+                        <label for="phone" class="form-label">
+                            Phone Number <span class="text-danger" aria-label="required">*</span>
+                        </label>
+                        <input 
+                            type="tel" 
+                            class="form-control" 
+                            id="phone" 
+                            name="phone"
+                            placeholder="+61 4XX XXX XXX"
+                            required
+                            aria-required="true"
+                            aria-describedby="phone-error phone-hint"
+                            autocomplete="tel"
+                            maxlength="20"
+                        >
+                        <div class="error-message" id="phone-error" role="alert"></div>
+                        <div class="password-hint" id="phone-hint">Australian format: +61 4XX XXX XXX</div>
+                    </div>
+                    
+                    <!-- Password -->
+                    <div class="mb-3">
+                        <label for="password" class="form-label">
+                            Password <span class="text-danger" aria-label="required">*</span>
+                        </label>
+                        <div class="password-toggle">
+                            <input 
+                                type="password" 
+                                class="form-control" 
+                                id="password" 
+                                name="password"
+                                placeholder="Create a strong password"
+                                required
+                                aria-required="true"
+                                aria-describedby="password-error password-requirements"
+                                autocomplete="new-password"
+                                maxlength="128"
+                            >
+                            <button 
+                                type="button" 
+                                class="password-toggle-btn" 
+                                id="togglePassword"
+                                aria-label="Show password"
+                            >
+                                👁️
+                            </button>
+                        </div>
+                        <div class="password-strength">
+                            <div class="password-strength-bar" id="passwordStrengthBar" role="progressbar" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100" aria-label="Password strength"></div>
+                        </div>
+                        <div class="error-message" id="password-error" role="alert"></div>
+                        
+                        <!-- Password Requirements -->
+                        <div class="password-requirements" id="password-requirements" aria-live="polite">
+                            <div class="requirement" id="req-length">
+                                <span class="icon" aria-hidden="true">○</span>
+                                <span>At least 8 characters</span>
+                            </div>
+                            <div class="requirement" id="req-uppercase">
+                                <span class="icon" aria-hidden="true">○</span>
+                                <span>One uppercase letter</span>
+                            </div>
+                            <div class="requirement" id="req-lowercase">
+                                <span class="icon" aria-hidden="true">○</span>
+                                <span>One lowercase letter</span>
+                            </div>
+                            <div class="requirement" id="req-number">
+                                <span class="icon" aria-hidden="true">○</span>
+                                <span>One number</span>
+                            </div>
+                            <div class="requirement" id="req-special">
+                                <span class="icon" aria-hidden="true">○</span>
+                                <span>One special character (!@#$%^&*)</span>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Confirm Password -->
+                    <div class="mb-3">
+                        <label for="confirmPassword" class="form-label">
+                            Confirm Password <span class="text-danger" aria-label="required">*</span>
+                        </label>
+                        <div class="password-toggle">
+                            <input 
+                                type="password" 
+                                class="form-control" 
+                                id="confirmPassword" 
+                                name="confirmPassword"
+                                placeholder="Re-enter your password"
+                                required
+                                aria-required="true"
+                                aria-describedby="confirmPassword-error confirmPassword-success"
+                                autocomplete="new-password"
+                                maxlength="128"
+                            >
+                            <button 
+                                type="button" 
+                                class="password-toggle-btn" 
+                                id="toggleConfirmPassword"
+                                aria-label="Show password"
+                            >
+                                👁️
+                            </button>
+                        </div>
+                        <div class="error-message" id="confirmPassword-error" role="alert"></div>
+                        <div class="success-message" id="confirmPassword-success">✓ Passwords match</div>
+                    </div>
+                    
+                    <!-- Terms and Conditions -->
+                    <div class="terms-checkbox">
+                        <div class="form-check">
+                            <input 
+                                class="form-check-input" 
+                                type="checkbox" 
+                                id="agreeTerms" 
+                                name="agreeTerms"
+                                required
+                                aria-required="true"
+                                aria-describedby="terms-error"
+                            >
+                            <label class="form-check-label" for="agreeTerms">
+                                I agree to the <a href="#" target="_blank">Terms of Service</a> and <a href="#" target="_blank">Privacy Policy</a> <span class="text-danger" aria-label="required">*</span>
+                            </label>
+                        </div>
+                        <div class="error-message" id="terms-error" role="alert"></div>
+                    </div>
+                    
+                    <!-- Sign Up Button -->
+                    <button type="submit" class="btn-signup" id="submitBtn">
+                        Create Account
+                    </button>
+                </form>
+                
+                <!-- Divider -->
+                <div class="divider">
+                    <span>or sign up with</span>
+                </div>
+                
+                <!-- Social Sign Up -->
+                <div class="social-signup">
+                    <button type="button" class="btn-social" aria-label="Sign up with Google">
+                        <svg width="20" height="20" viewBox="0 0 20 20" fill="none" aria-hidden="true">
+                            <path d="M19.6 10.227c0-.709-.064-1.39-.182-2.045H10v3.868h5.382a4.6 4.6 0 01-1.996 3.018v2.51h3.232c1.891-1.742 2.982-4.305 2.982-7.35z" fill="#4285F4"/>
+                            <path d="M10 20c2.7 0 4.964-.895 6.618-2.423l-3.232-2.509c-.895.6-2.04.955-3.386.955-2.605 0-4.81-1.76-5.595-4.123H1.064v2.59A9.996 9.996 0 0010 20z" fill="#34A853"/>
+                            <path d="M4.405 11.9c-.2-.6-.314-1.24-.314-1.9 0-.66.114-1.3.314-1.9V5.51H1.064A9.996 9.996 0 000 10c0 1.614.386 3.14 1.064 4.49l3.34-2.59z" fill="#FBBC05"/>
+                            <path d="M10 3.977c1.468 0 2.786.505 3.823 1.496l2.868-2.868C14.959.99 12.695 0 10 0 6.09 0 2.71 2.24 1.064 5.51l3.34 2.59C5.19 5.736 7.395 3.977 10 3.977z" fill="#EA4335"/>
+                        </svg>
+                        <span>Google</span>
+                    </button>
+                    
+                    <button type="button" class="btn-social" aria-label="Sign up with Facebook">
+                        <svg width="20" height="20" viewBox="0 0 20 20" fill="#1877F2" aria-hidden="true">
+                            <path d="M20 10c0-5.523-4.477-10-10-10S0 4.477 0 10c0 4.991 3.657 9.128 8.438 9.878v-6.987h-2.54V10h2.54V7.797c0-2.506 1.492-3.89 3.777-3.89 1.094 0 2.238.195 2.238.195v2.46h-1.26c-1.243 0-1.63.771-1.63 1.562V10h2.773l-.443 2.89h-2.33v6.988C16.343 19.128 20 14.991 20 10z"/>
+                        </svg>
+                        <span>Facebook</span>
+                    </button>
+                </div>
+                
+                <!-- Sign In Link -->
+                <div class="signin-link">
+                    Already have an account? <a href="sign-in.html">Sign in</a>
+                </div>
+            </div>
+        </div>
+    </main>
+    
+    <!-- Footer - Uses styles from styles.css -->
+    <footer>
+        <div class="container">
+            <p>© 2025 Booking.com. All rights reserved.</p>
+            <p>Your trusted travel partner worldwide</p>
+        </div>
+    </footer>
+    
+    <!-- jQuery -->
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    
+    <!-- Bootstrap JS -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    
+    <!-- Sign Up Script -->
+    <script src="signup.js"></script>
+</body>
+</html>

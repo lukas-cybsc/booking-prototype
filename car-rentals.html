@@ -1,0 +1,641 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Rent a car for your next trip - Compare prices from top rental companies">
+    <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline' https://code.jquery.com https://cdn.jsdelivr.net; style-src 'self' 'unsafe-inline' https://cdn.jsdelivr.net; img-src 'self' https: data:; font-src 'self' https://cdn.jsdelivr.net;">
+    <title>Car Rentals - Rent a Car | Booking.com</title>
+    
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    
+    <!-- External CSS - Using same styles.css for consistency -->
+    <link rel="stylesheet" href="styles.css">
+    
+    <style>
+        /* Additional styles specific to car rentals page that complement styles.css */
+        .car-hero {
+            background: linear-gradient(135deg, var(--bui-color-primary-dark) 0%, var(--bui-color-primary) 100%);
+            color: white;
+            padding: 60px var(--bui-spacing-4) 40px;
+            text-align: center;
+        }
+        
+        .car-hero h1 {
+            font-size: 40px;
+            margin-bottom: var(--bui-spacing-3);
+            font-weight: 700;
+        }
+        
+        .car-hero .lead {
+            font-size: 18px;
+            opacity: 0.95;
+            margin: 0;
+        }
+        
+        .search-card {
+            background: var(--bui-color-white);
+            border-radius: 8px;
+            padding: 40px;
+            box-shadow: 0 4px 16px rgba(0,0,0,0.15);
+            margin-top: -30px;
+            border: 4px solid var(--bui-color-complement);
+        }
+        
+        .form-label {
+            font-weight: 600;
+            margin-bottom: var(--bui-spacing-2);
+            color: var(--bui-color-text);
+            font-size: 14px;
+        }
+        
+        .form-control, .form-select {
+            padding: 12px;
+            border: 2px solid #767676;
+            border-radius: var(--bui-border-radius);
+            font-size: 16px;
+            transition: border-color 0.3s, box-shadow 0.3s;
+        }
+        
+        .form-control:focus, .form-select:focus {
+            border-color: var(--bui-color-primary);
+            box-shadow: 0 0 0 3px rgba(0, 53, 128, 0.25);
+            outline: none;
+        }
+        
+        .form-control.is-invalid {
+            border-color: var(--bui-color-destructive);
+            border-width: 2px;
+        }
+        
+        .form-control.is-invalid:focus {
+            box-shadow: 0 0 0 3px rgba(204, 0, 0, 0.25);
+        }
+        
+        .form-check-input {
+            width: 20px;
+            height: 20px;
+            margin-right: 8px;
+            cursor: pointer;
+            border: 2px solid #767676;
+        }
+        
+        .form-check-input:focus {
+            border-color: var(--bui-color-primary);
+            box-shadow: 0 0 0 3px rgba(0, 53, 128, 0.25);
+        }
+        
+        .form-check-input:checked {
+            background-color: var(--bui-color-primary);
+            border-color: var(--bui-color-primary);
+        }
+        
+        .form-check-label {
+            cursor: pointer;
+            color: var(--bui-color-text);
+            font-size: 14px;
+        }
+        
+        .btn-primary {
+            background: var(--bui-color-primary);
+            border: none;
+            padding: 14px;
+            font-size: 16px;
+            font-weight: 600;
+            border-radius: var(--bui-border-radius);
+            transition: background 0.3s;
+            min-height: 48px;
+        }
+        
+        .btn-primary:hover:not(:disabled) {
+            background: var(--bui-color-primary-dark);
+        }
+        
+        .btn-primary:focus {
+            outline: 3px solid var(--bui-color-complement);
+            outline-offset: 2px;
+            box-shadow: none;
+        }
+        
+        .btn-primary:disabled {
+            background: #999999;
+            opacity: 0.6;
+        }
+        
+        .location-suggestions {
+            position: absolute;
+            background: white;
+            border: 2px solid var(--bui-color-primary);
+            border-top: none;
+            border-radius: 0 0 4px 4px;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.15);
+            z-index: 1000;
+            width: 100%;
+            max-height: 250px;
+            overflow-y: auto;
+            display: none;
+            margin-top: 4px;
+        }
+        
+        .suggestion-item {
+            padding: 12px 16px;
+            cursor: pointer;
+            border-bottom: 1px solid #E0E0E0;
+        }
+        
+        .suggestion-item:last-child {
+            border-bottom: none;
+        }
+        
+        .suggestion-item:hover, 
+        .suggestion-item:focus {
+            background: var(--bui-color-background);
+        }
+        
+        .suggestion-item:focus {
+            outline: 3px solid var(--bui-color-primary);
+            outline-offset: -3px;
+        }
+        
+        .error-message {
+            color: var(--bui-color-destructive);
+            font-size: 14px;
+            font-weight: 600;
+            margin-top: 6px;
+            display: none;
+        }
+        
+        .text-danger {
+            color: var(--bui-color-destructive);
+        }
+        
+        .driver-age-note {
+            font-size: 13px;
+            color: var(--bui-color-text-light);
+            margin-top: 6px;
+        }
+        
+        .car-categories {
+            padding: 60px var(--bui-spacing-4);
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+        
+        .section-title {
+            font-size: 32px;
+            font-weight: 700;
+            margin-bottom: 30px;
+            color: var(--bui-color-text);
+        }
+        
+        .car-card {
+            background: var(--bui-color-white);
+            border-radius: 8px;
+            padding: var(--bui-spacing-4);
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+            transition: transform 0.3s, box-shadow 0.3s;
+            cursor: pointer;
+            height: 100%;
+            text-align: center;
+            border: 2px solid transparent;
+        }
+        
+        .car-card:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 6px 20px rgba(0,0,0,0.15);
+            border-color: var(--bui-color-primary);
+        }
+        
+        .car-card:focus-within {
+            outline: 3px solid var(--bui-color-primary);
+            outline-offset: 2px;
+        }
+        
+        .car-icon {
+            font-size: 64px;
+            margin-bottom: var(--bui-spacing-3);
+            color: var(--bui-color-primary);
+        }
+        
+        .car-card h3 {
+            font-size: 20px;
+            margin-bottom: var(--bui-spacing-2);
+            color: var(--bui-color-text);
+            font-weight: 600;
+        }
+        
+        .car-card .text-muted {
+            color: var(--bui-color-text-light);
+        }
+        
+        .popular-locations {
+            background: var(--bui-color-background);
+            padding: 60px var(--bui-spacing-4);
+        }
+        
+        .locations-container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+        
+        .location-card {
+            background: var(--bui-color-white);
+            border-radius: 8px;
+            padding: var(--bui-spacing-4);
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+            transition: transform 0.3s, box-shadow 0.3s;
+            cursor: pointer;
+            border: 2px solid transparent;
+        }
+        
+        .location-card:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 6px 20px rgba(0,0,0,0.15);
+            border-color: var(--bui-color-primary);
+        }
+        
+        .location-card:focus-within {
+            outline: 3px solid var(--bui-color-primary);
+            outline-offset: 2px;
+        }
+        
+        .location-card h3 {
+            font-size: 20px;
+            margin-bottom: var(--bui-spacing-2);
+            color: var(--bui-color-text);
+            font-weight: 600;
+        }
+        
+        .location-card .text-muted {
+            color: var(--bui-color-text-light);
+            margin: 0;
+        }
+        
+        footer {
+            background: var(--bui-color-primary);
+            color: white;
+            padding: 40px var(--bui-spacing-4);
+            text-align: center;
+            margin-top: 60px;
+        }
+        
+        footer p {
+            margin: 0;
+        }
+        
+        footer p:first-child {
+            font-size: 14px;
+            margin-bottom: 8px;
+        }
+        
+        footer p:last-child {
+            font-size: 12px;
+            opacity: 0.9;
+        }
+        
+        /* Car Rental Results */
+        .car-rental-results {
+            margin-top: 40px;
+        }
+        
+        .results-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: var(--bui-spacing-4);
+            padding: var(--bui-spacing-4);
+            background: var(--bui-color-white);
+            border-radius: 8px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+        }
+        
+        .results-header h2 {
+            color: var(--bui-color-primary);
+            margin: 0 0 8px 0;
+            font-size: 24px;
+            font-weight: 700;
+        }
+        
+        .results-header p {
+            color: var(--bui-color-text-light);
+            margin: 0;
+            font-size: 14px;
+        }
+        
+        .btn-book-car {
+            background: var(--bui-color-primary);
+            color: white;
+            border: none;
+            padding: 12px 24px;
+            border-radius: var(--bui-border-radius);
+            font-weight: 600;
+            cursor: pointer;
+            width: 100%;
+            transition: background 0.3s;
+            font-size: 16px;
+            min-height: 48px;
+        }
+        
+        .btn-book-car:hover {
+            background: var(--bui-color-primary-dark);
+        }
+        
+        .btn-book-car:focus {
+            outline: 3px solid var(--bui-color-complement);
+            outline-offset: 2px;
+        }
+        
+        /* Responsive Design */
+        @media (max-width: 768px) {
+            .car-hero h1 {
+                font-size: 32px;
+            }
+            
+            .search-card {
+                padding: var(--bui-spacing-4);
+            }
+            
+            .results-header {
+                flex-direction: column;
+                gap: var(--bui-spacing-3);
+                align-items: flex-start;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Skip Link for Accessibility (WCAG 2.4.1) -->
+    <a href="#main-content" class="skip-link">Skip to main content</a>
+    
+    <!-- ARIA Live Region for Screen Reader Announcements -->
+    <div class="live-region" role="status" aria-live="polite" aria-atomic="true" id="live-region"></div>
+    
+    <!-- Header - Uses styles from styles.css -->
+    <header>
+        <div class="header-container">
+            <a href="index.html" class="logo" aria-label="Booking.com homepage">Booking.com</a>
+            <nav aria-label="Main navigation">
+                <ul class="header-nav">
+                    <li><a href="flights.html">Flights</a></li>
+                    <li><a href="car-rentals.html" aria-current="page" style="font-weight: 600; border-bottom: 2px solid white;">Car rentals</a></li>
+                    <li><a href="sign-in.html">Sign in</a></li>
+                    <li><a href="contact.html">Contact Us</a></li>
+                </ul>
+            </nav>
+        </div>
+    </header>
+    
+    <!-- Hero Section -->
+    <section class="car-hero" role="banner">
+        <div class="container">
+            <h1>Car rental for any kind of trip</h1>
+            <p class="lead">Compare prices from the biggest car rental companies</p>
+        </div>
+    </section>
+    
+    <!-- Search Form -->
+    <main id="main-content">
+        <section class="container mb-5">
+            <div class="search-card">
+                <form id="carRentalForm" novalidate>
+                    <div class="row g-3">
+                        <!-- Pick-up Location -->
+                        <div class="col-md-6">
+                            <label for="pickupLocation" class="form-label">
+                                Pick-up location <span class="text-danger" aria-label="required">*</span>
+                            </label>
+                            <div style="position: relative;">
+                                <input 
+                                    type="text" 
+                                    class="form-control" 
+                                    id="pickupLocation" 
+                                    name="pickupLocation"
+                                    placeholder="City, airport, address, or hotel"
+                                    required
+                                    aria-required="true"
+                                    aria-describedby="pickupLocation-error"
+                                    autocomplete="off"
+                                    maxlength="100"
+                                    role="combobox"
+                                    aria-autocomplete="list"
+                                    aria-controls="pickupSuggestions"
+                                    aria-expanded="false"
+                                >
+                                <div class="location-suggestions" id="pickupSuggestions" role="listbox" aria-label="Location suggestions"></div>
+                                <div class="error-message" id="pickupLocation-error" role="alert"></div>
+                            </div>
+                        </div>
+                        
+                        <!-- Drop-off Location -->
+                        <div class="col-md-6">
+                            <label for="dropoffLocation" class="form-label">Drop-off location</label>
+                            <div style="position: relative;">
+                                <input 
+                                    type="text" 
+                                    class="form-control" 
+                                    id="dropoffLocation" 
+                                    name="dropoffLocation"
+                                    placeholder="Same as pick-up"
+                                    autocomplete="off"
+                                    maxlength="100"
+                                    role="combobox"
+                                    aria-autocomplete="list"
+                                    aria-controls="dropoffSuggestions"
+                                    aria-expanded="false"
+                                    disabled
+                                >
+                                <div class="location-suggestions" id="dropoffSuggestions" role="listbox" aria-label="Location suggestions"></div>
+                            </div>
+                            <div class="form-check mt-2">
+                                <input class="form-check-input" type="checkbox" id="sameLocation" checked>
+                                <label class="form-check-label" for="sameLocation">
+                                    Return to same location
+                                </label>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="row g-3 mt-2">
+                        <!-- Pick-up Date & Time -->
+                        <div class="col-md-3">
+                            <label for="pickupDate" class="form-label">
+                                Pick-up date <span class="text-danger" aria-label="required">*</span>
+                            </label>
+                            <input 
+                                type="date" 
+                                class="form-control" 
+                                id="pickupDate" 
+                                name="pickupDate"
+                                required
+                                aria-required="true"
+                                aria-describedby="pickupDate-error"
+                            >
+                            <div class="error-message" id="pickupDate-error" role="alert"></div>
+                        </div>
+                        
+                        <div class="col-md-3">
+                            <label for="pickupTime" class="form-label">
+                                Pick-up time <span class="text-danger" aria-label="required">*</span>
+                            </label>
+                            <select class="form-select" id="pickupTime" name="pickupTime" required aria-label="Pick-up time">
+                                <option value="09:00">09:00</option>
+                                <option value="10:00" selected>10:00</option>
+                                <option value="11:00">11:00</option>
+                                <option value="12:00">12:00</option>
+                                <option value="13:00">13:00</option>
+                                <option value="14:00">14:00</option>
+                                <option value="15:00">15:00</option>
+                                <option value="16:00">16:00</option>
+                                <option value="17:00">17:00</option>
+                            </select>
+                        </div>
+                        
+                        <!-- Drop-off Date & Time -->
+                        <div class="col-md-3">
+                            <label for="dropoffDate" class="form-label">
+                                Drop-off date <span class="text-danger" aria-label="required">*</span>
+                            </label>
+                            <input 
+                                type="date" 
+                                class="form-control" 
+                                id="dropoffDate" 
+                                name="dropoffDate"
+                                required
+                                aria-required="true"
+                                aria-describedby="dropoffDate-error"
+                            >
+                            <div class="error-message" id="dropoffDate-error" role="alert"></div>
+                        </div>
+                        
+                        <div class="col-md-3">
+                            <label for="dropoffTime" class="form-label">
+                                Drop-off time <span class="text-danger" aria-label="required">*</span>
+                            </label>
+                            <select class="form-select" id="dropoffTime" name="dropoffTime" required aria-label="Drop-off time">
+                                <option value="09:00">09:00</option>
+                                <option value="10:00" selected>10:00</option>
+                                <option value="11:00">11:00</option>
+                                <option value="12:00">12:00</option>
+                                <option value="13:00">13:00</option>
+                                <option value="14:00">14:00</option>
+                                <option value="15:00">15:00</option>
+                                <option value="16:00">16:00</option>
+                                <option value="17:00">17:00</option>
+                            </select>
+                        </div>
+                    </div>
+                    
+                    <div class="row g-3 mt-2">
+                        <div class="col-md-6">
+                            <label for="driverAge" class="form-label">
+                                Driver's age <span class="text-danger" aria-label="required">*</span>
+                            </label>
+                            <select class="form-select" id="driverAge" name="driverAge" required aria-label="Driver's age">
+                                <option value="">Select age</option>
+                                <option value="18-24">18-24</option>
+                                <option value="25-29">25-29</option>
+                                <option value="30-65" selected>30-65</option>
+                                <option value="65+">65+</option>
+                            </select>
+                            <div class="driver-age-note">Additional fees may apply for drivers under 25</div>
+                        </div>
+                    </div>
+                    
+                    <div class="mt-4">
+                        <button type="submit" class="btn btn-primary btn-lg w-100" id="searchBtn">
+                            🔍 Search
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </section>
+        
+        <!-- Car Categories -->
+        <section class="car-categories">
+            <div class="container">
+                <h2 class="section-title">Browse by car type</h2>
+                <div class="row g-4">
+                    <div class="col-md-3 col-sm-6">
+                        <div class="car-card" tabindex="0" role="button" aria-label="Economy cars from 25 dollars per day">
+                            <div class="car-icon" aria-hidden="true">🚗</div>
+                            <h3>Economy</h3>
+                            <p class="text-muted">From $25/day</p>
+                        </div>
+                    </div>
+                    
+                    <div class="col-md-3 col-sm-6">
+                        <div class="car-card" tabindex="0" role="button" aria-label="SUV cars from 55 dollars per day">
+                            <div class="car-icon" aria-hidden="true">🚙</div>
+                            <h3>SUV</h3>
+                            <p class="text-muted">From $55/day</p>
+                        </div>
+                    </div>
+                    
+                    <div class="col-md-3 col-sm-6">
+                        <div class="car-card" tabindex="0" role="button" aria-label="Luxury cars from 85 dollars per day">
+                            <div class="car-icon" aria-hidden="true">🚘</div>
+                            <h3>Luxury</h3>
+                            <p class="text-muted">From $85/day</p>
+                        </div>
+                    </div>
+                    
+                    <div class="col-md-3 col-sm-6">
+                        <div class="car-card" tabindex="0" role="button" aria-label="Van cars from 65 dollars per day">
+                            <div class="car-icon" aria-hidden="true">🚐</div>
+                            <h3>Van</h3>
+                            <p class="text-muted">From $65/day</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+        
+        <!-- Popular Locations -->
+        <section class="popular-locations">
+            <div class="locations-container">
+                <h2 class="section-title">Popular car rental locations</h2>
+                <div class="row g-4">
+                    <div class="col-md-4">
+                        <div class="location-card" tabindex="0" role="button" aria-label="Sydney Airport, 45 car rental companies">
+                            <h3>Sydney Airport</h3>
+                            <p class="text-muted">45 car rental companies</p>
+                        </div>
+                    </div>
+                    
+                    <div class="col-md-4">
+                        <div class="location-card" tabindex="0" role="button" aria-label="Melbourne Airport, 38 car rental companies">
+                            <h3>Melbourne Airport</h3>
+                            <p class="text-muted">38 car rental companies</p>
+                        </div>
+                    </div>
+                    
+                    <div class="col-md-4">
+                        <div class="location-card" tabindex="0" role="button" aria-label="Brisbane Airport, 32 car rental companies">
+                            <h3>Brisbane Airport</h3>
+                            <p class="text-muted">32 car rental companies</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </main>
+    
+    <!-- Footer -->
+    <footer>
+        <div class="container">
+            <p>© 2025 Booking.com. All rights reserved.</p>
+            <p>Your trusted travel partner worldwide</p>
+        </div>
+    </footer>
+    
+    <!-- jQuery -->
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    
+    <!-- Bootstrap JS -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    
+    <!-- External JavaScript -->
+    <script src="car-rentals.js"></script>
+</body>
+</html>

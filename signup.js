@@ -1,8 +1,8 @@
 /* ============================================
-   contact.js - Maximum Security Contact Form
+   signup.js - Maximum Security Sign Up System
    WCAG 2.2 AA Compliant
    Protects against: XSS (All 4 types), CSRF, SQL Injection, OWASP Top 10
-   Rate Limiting, Brute Force Protection
+   Rate Limiting, Brute Force Protection, Enhanced Validation
    ============================================ */
 
 $(document).ready(function() {
@@ -40,13 +40,13 @@ $(document).ready(function() {
     }
     
     const csrfToken = generateCSRFToken();
-    sessionStorage.setItem('csrf_token_contact', csrfToken);
+    sessionStorage.setItem('csrf_token_signup', csrfToken);
     
-    // Rate limiting for spam protection
-    let submitAttempts = parseInt(sessionStorage.getItem('contact_attempts') || '0');
+    // Rate limiting for brute force protection
+    let signupAttempts = parseInt(sessionStorage.getItem('signup_attempts') || '0');
     const MAX_ATTEMPTS = 5;
     const LOCKOUT_TIME = 15 * 60 * 1000; // 15 minutes
-    let lockoutUntil = parseInt(sessionStorage.getItem('contact_lockout_until') || '0');
+    let lockoutUntil = parseInt(sessionStorage.getItem('signup_lockout_until') || '0');
     
     // Check if still locked out on page load
     if (lockoutUntil && Date.now() < lockoutUntil) {
@@ -74,7 +74,7 @@ $(document).ready(function() {
     }
     
     // ============================================
-    // INPUT VALIDATION
+    // INPUT VALIDATION - Enhanced from Sign-In
     // ============================================
     const validators = {
         name: function(value) {
@@ -95,28 +95,123 @@ $(document).ready(function() {
             return /^[\+]?[0-9]{10,15}$/.test(cleanPhone);
         },
         
-        bookingRef: function(value) {
-            // Booking reference: letters, numbers, and hyphens only
-            const pattern = /^[a-zA-Z0-9\-]{5,20}$/;
-            return pattern.test(value);
-        },
-        
-        message: function(value) {
-            return value.length >= 10 && value.length <= 1000;
+        password: function(value) {
+            // Strong password: 8+ chars, uppercase, lowercase, number, special char
+            return value.length >= 8 && 
+                   value.length <= 128 &&
+                   /[A-Z]/.test(value) && 
+                   /[a-z]/.test(value) &&
+                   /[0-9]/.test(value) &&
+                   /[!@#$%^&*()_+\-=\[\]{};':"\\|,.<>\/?]/.test(value);
         }
     };
     
     // ============================================
-    // CHARACTER COUNTER FOR MESSAGE
+    // PASSWORD STRENGTH CHECKER WITH VISUAL FEEDBACK
     // ============================================
-    $('#message').on('input', function() {
-        const length = $(this).val().length;
-        $('#char-count').text(`${length} / 1000 characters`);
+    function checkPasswordStrength(password) {
+        const requirements = {
+            length: password.length >= 8,
+            uppercase: /[A-Z]/.test(password),
+            lowercase: /[a-z]/.test(password),
+            number: /[0-9]/.test(password),
+            special: /[!@#$%^&*()_+\-=\[\]{};':"\\|,.<>\/?]/.test(password)
+        };
         
-        if (length > 1000) {
-            $(this).val($(this).val().substring(0, 1000));
-            $('#char-count').text('1000 / 1000 characters');
+        // Update requirement indicators with proper icons
+        $('#req-length').toggleClass('met', requirements.length)
+            .find('.icon').text(requirements.length ? '✓' : '○');
+        $('#req-uppercase').toggleClass('met', requirements.uppercase)
+            .find('.icon').text(requirements.uppercase ? '✓' : '○');
+        $('#req-lowercase').toggleClass('met', requirements.lowercase)
+            .find('.icon').text(requirements.lowercase ? '✓' : '○');
+        $('#req-number').toggleClass('met', requirements.number)
+            .find('.icon').text(requirements.number ? '✓' : '○');
+        $('#req-special').toggleClass('met', requirements.special)
+            .find('.icon').text(requirements.special ? '✓' : '○');
+        
+        // Calculate strength score
+        let strength = 0;
+        if (requirements.length) strength++;
+        if (requirements.uppercase) strength++;
+        if (requirements.lowercase) strength++;
+        if (requirements.number) strength++;
+        if (requirements.special) strength++;
+        
+        // Update strength bar
+        const $strengthBar = $('#passwordStrengthBar');
+        $strengthBar.removeClass('weak medium strong');
+        
+        if (strength <= 2) {
+            $strengthBar.addClass('weak').attr('aria-valuenow', '33');
+        } else if (strength <= 4) {
+            $strengthBar.addClass('medium').attr('aria-valuenow', '66');
+        } else {
+            $strengthBar.addClass('strong').attr('aria-valuenow', '100');
         }
+        
+        return strength === 5;
+    }
+    
+    // ============================================
+    // PASSWORD FIELD EVENT HANDLERS
+    // ============================================
+    $('#password').on('focus', function() {
+        $('#password-requirements').addClass('show');
+    });
+    
+    $('#password').on('input', function() {
+        const password = $(this).val();
+        checkPasswordStrength(password);
+        
+        // Check if confirm password matches
+        const confirmPassword = $('#confirmPassword').val();
+        if (confirmPassword.length > 0) {
+            validatePasswordMatch();
+        }
+    });
+    
+    $('#password').on('blur', function() {
+        setTimeout(function() {
+            if (!$('#confirmPassword').is(':focus')) {
+                $('#password-requirements').removeClass('show');
+            }
+        }, 200);
+        
+        // Sanitize on blur
+        const original = $(this).val();
+        const sanitized = sanitizeInput(original);
+        if (original !== sanitized) {
+            $(this).val(sanitized);
+            logSuspiciousActivity('Suspicious content in password field');
+        }
+    });
+    
+    // ============================================
+    // TOGGLE PASSWORD VISIBILITY (WCAG 2.2 - Accessible Authentication)
+    // ============================================
+    $('#togglePassword').on('click', function() {
+        const passwordInput = $('#password');
+        const type = passwordInput.attr('type') === 'password' ? 'text' : 'password';
+        passwordInput.attr('type', type);
+        
+        // Update button appearance and aria-label
+        $(this).text(type === 'password' ? '👁️' : '🙈');
+        $(this).attr('aria-label', type === 'password' ? 'Show password' : 'Hide password');
+        
+        // Announce to screen readers
+        $('#live-region').text(type === 'password' ? 'Password hidden' : 'Password visible');
+    });
+    
+    $('#toggleConfirmPassword').on('click', function() {
+        const confirmPasswordInput = $('#confirmPassword');
+        const type = confirmPasswordInput.attr('type') === 'password' ? 'text' : 'password';
+        confirmPasswordInput.attr('type', type);
+        
+        $(this).text(type === 'password' ? '👁️' : '🙈');
+        $(this).attr('aria-label', type === 'password' ? 'Show password' : 'Hide password');
+        
+        $('#live-region').text(type === 'password' ? 'Confirm password hidden' : 'Confirm password visible');
     });
     
     // ============================================
@@ -126,18 +221,13 @@ $(document).ready(function() {
         const $field = $('#' + fieldId);
         const value = $field.val();
         const $error = $('#' + fieldId + '-error');
+        const $success = $('#' + fieldId + '-success');
         
-        if (value.length === 0 && fieldId !== 'phone' && fieldId !== 'bookingRef') {
+        if (value.length === 0) {
             $field.removeClass('is-invalid is-valid');
             $error.hide();
+            if ($success.length) $success.hide();
             return false;
-        }
-        
-        // Phone and booking ref are optional
-        if ((fieldId === 'phone' || fieldId === 'bookingRef') && value.length === 0) {
-            $field.removeClass('is-invalid is-valid');
-            $error.hide();
-            return true;
         }
         
         const isValid = validatorFunc(value);
@@ -145,16 +235,45 @@ $(document).ready(function() {
         if (isValid) {
             $field.removeClass('is-invalid').addClass('is-valid');
             $error.hide();
+            if ($success.length) $success.show();
             return true;
         } else {
             $field.removeClass('is-valid').addClass('is-invalid');
             $error.text(errorMsg).show();
+            if ($success.length) $success.hide();
+            return false;
+        }
+    }
+    
+    function validatePasswordMatch() {
+        const password = $('#password').val();
+        const confirmPassword = $('#confirmPassword').val();
+        const $confirmField = $('#confirmPassword');
+        const $error = $('#confirmPassword-error');
+        const $success = $('#confirmPassword-success');
+        
+        if (confirmPassword.length === 0) {
+            $confirmField.removeClass('is-invalid is-valid');
+            $error.hide();
+            $success.hide();
+            return false;
+        }
+        
+        if (password === confirmPassword && validators.password(password)) {
+            $confirmField.removeClass('is-invalid').addClass('is-valid');
+            $error.hide();
+            $success.show();
+            return true;
+        } else {
+            $confirmField.removeClass('is-valid').addClass('is-invalid');
+            $error.text('Passwords do not match').show();
+            $success.hide();
             return false;
         }
     }
     
     // ============================================
-    // REAL-TIME FIELD VALIDATION
+    // REAL-TIME FIELD VALIDATION (on blur)
     // ============================================
     $('#firstName').on('blur', function() {
         validateField('firstName', validators.name, 'First name must be 2-50 letters only');
@@ -169,27 +288,18 @@ $(document).ready(function() {
     });
     
     $('#phone').on('blur', function() {
-        const value = $(this).val();
-        if (value.length > 0) {
-            validateField('phone', validators.phone, 'Please enter a valid phone number (10-15 digits)');
-        }
+        validateField('phone', validators.phone, 'Please enter a valid phone number (10-15 digits)');
     });
     
-    $('#bookingRef').on('blur', function() {
-        const value = $(this).val();
-        if (value.length > 0) {
-            validateField('bookingRef', validators.bookingRef, 'Booking reference must be 5-20 characters (letters, numbers, hyphens)');
-        }
-    });
-    
-    $('#message').on('blur', function() {
-        validateField('message', validators.message, 'Message must be between 10 and 1000 characters');
+    $('#confirmPassword').on('input blur', function() {
+        validatePasswordMatch();
     });
     
     // ============================================
     // REAL-TIME INPUT SANITIZATION
     // ============================================
     $('#email').on('input', function() {
+        // Remove any HTML tags in real-time
         let value = $(this).val();
         let sanitized = sanitizeInput(value);
         if (value !== sanitized) {
@@ -199,7 +309,7 @@ $(document).ready(function() {
         }
     });
     
-    $('#firstName, #lastName, #message').on('input', function() {
+    $('#firstName, #lastName').on('input', function() {
         const $this = $(this);
         const value = $this.val();
         const sanitized = sanitizeInput(value);
@@ -239,7 +349,7 @@ $(document).ready(function() {
     }
     
     // Monitor for XSS attempts in all inputs
-    $('input, textarea').on('input', function() {
+    $('input').on('input', function() {
         const value = $(this).val();
         if (/<script|javascript:|onerror|onclick/i.test(value)) {
             logSuspiciousActivity('Potential XSS in input field');
@@ -247,7 +357,7 @@ $(document).ready(function() {
     });
     
     // Prevent clipboard injection attacks
-    $('input, textarea').on('paste', function(e) {
+    $('input').on('paste', function(e) {
         setTimeout(() => {
             const pastedValue = $(this).val();
             const sanitized = sanitizeInput(pastedValue);
@@ -261,7 +371,7 @@ $(document).ready(function() {
     // ============================================
     // FORM SUBMISSION WITH COMPREHENSIVE SECURITY
     // ============================================
-    $('#contactForm').on('submit', async function(e) {
+    $('#signupForm').on('submit', async function(e) {
         e.preventDefault();
         
         // Check rate limiting
@@ -271,17 +381,16 @@ $(document).ready(function() {
             return;
         }
         
-        if (submitAttempts >= MAX_ATTEMPTS) {
+        if (signupAttempts >= MAX_ATTEMPTS) {
             lockoutUntil = Date.now() + LOCKOUT_TIME;
-            sessionStorage.setItem('contact_lockout_until', lockoutUntil.toString());
+            sessionStorage.setItem('signup_lockout_until', lockoutUntil.toString());
             showLockoutMessage(15);
             return;
         }
         
         // Clear previous errors
         $('.error-message').hide();
-        $('.form-control, .form-select').removeClass('is-invalid');
-        $('#successMessage').removeClass('show');
+        $('.form-control').removeClass('is-invalid');
         
         let isValid = true;
         
@@ -290,9 +399,9 @@ $(document).ready(function() {
         const lastName = sanitizeInput($('#lastName').val().trim());
         const email = sanitizeInput($('#email').val().toLowerCase().trim());
         const phone = sanitizeInput($('#phone').val().trim());
-        const subject = $('#subject').val();
-        const bookingRef = sanitizeInput($('#bookingRef').val().trim());
-        const message = sanitizeInput($('#message').val().trim());
+        const password = $('#password').val();
+        const confirmPassword = $('#confirmPassword').val();
+        const agreeTerms = $('#agreeTerms').is(':checked');
         
         // Validate First Name
         if (!validators.name(firstName)) {
@@ -333,47 +442,47 @@ $(document).ready(function() {
             isValid = false;
         }
         
-        // Validate Phone (optional)
-        if (phone.length > 0 && !validators.phone(phone)) {
+        // Validate Phone
+        if (!validators.phone(phone)) {
             showError('phone', 'Please enter a valid phone number (10-15 digits)');
             isValid = false;
         }
         
-        // Validate Subject
-        if (!subject) {
-            showError('subject', 'Please select a subject');
+        // Check for SQL injection in phone
+        if (detectSQLInjection(phone)) {
+            showError('phone', 'Invalid characters detected');
+            logSuspiciousActivity('SQL Injection attempt in phone');
             isValid = false;
         }
         
-        // Validate Booking Reference (optional)
-        if (bookingRef.length > 0 && !validators.bookingRef(bookingRef)) {
-            showError('bookingRef', 'Booking reference must be 5-20 characters');
+        // Validate Password
+        if (!validators.password(password)) {
+            showError('password', 'Password must meet all security requirements');
             isValid = false;
         }
         
-        // Check for SQL injection in booking ref
-        if (bookingRef.length > 0 && detectSQLInjection(bookingRef)) {
-            showError('bookingRef', 'Invalid characters detected');
-            logSuspiciousActivity('SQL Injection attempt in booking reference');
+        // Check for SQL injection in password
+        if (detectSQLInjection(password)) {
+            showError('password', 'Invalid characters detected');
+            logSuspiciousActivity('SQL Injection attempt in password');
             isValid = false;
         }
         
-        // Validate Message
-        if (!validators.message(message)) {
-            showError('message', 'Message must be between 10 and 1000 characters');
+        // Validate Password Match
+        if (password !== confirmPassword) {
+            showError('confirmPassword', 'Passwords do not match');
             isValid = false;
         }
         
-        // Check for SQL injection in message
-        if (detectSQLInjection(message)) {
-            showError('message', 'Invalid characters detected');
-            logSuspiciousActivity('SQL Injection attempt in message');
+        // Validate Terms Agreement
+        if (!agreeTerms) {
+            showError('terms', 'You must agree to the Terms of Service and Privacy Policy');
             isValid = false;
         }
         
         if (!isValid) {
-            submitAttempts++;
-            sessionStorage.setItem('contact_attempts', submitAttempts.toString());
+            signupAttempts++;
+            sessionStorage.setItem('signup_attempts', signupAttempts.toString());
             
             // Announce errors to screen readers
             const errorCount = $('.error-message:visible').length;
@@ -389,16 +498,14 @@ $(document).ready(function() {
             return;
         }
         
-        // Prepare secure contact data
-        const contactData = {
+        // Prepare secure signup data
+        const signupData = {
             csrf_token: csrfToken,
             firstName: firstName,
             lastName: lastName,
             email: email,
             phone: phone,
-            subject: subject,
-            bookingRef: bookingRef,
-            message: message,
+            password: password,
             timestamp: new Date().toISOString(),
             userAgent: navigator.userAgent,
             fingerprint: generateFingerprint()
@@ -406,60 +513,44 @@ $(document).ready(function() {
         
         // Disable submit button
         const $submitBtn = $('#submitBtn');
-        const originalHTML = $submitBtn.html();
-        $submitBtn.prop('disabled', true).html('<span class="spinner-border spinner-border-sm me-2" role="status" aria-hidden="true"></span>Sending...');
+        const originalText = $submitBtn.html();
+        $submitBtn.prop('disabled', true).html('<span class="spinner-border spinner-border-sm me-2" role="status" aria-hidden="true"></span>Creating account...');
         
         // Announce loading state
-        $('#live-region').text('Sending your message, please wait...');
+        $('#live-region').text('Creating your account, please wait...');
         
-        // Simulate secure API call
+        // Simulate account creation
         try {
             // Simulate API delay
             await new Promise(resolve => setTimeout(resolve, 1500));
             
             // Success - Reset attempts
-            submitAttempts = 0;
-            sessionStorage.removeItem('contact_attempts');
-            sessionStorage.removeItem('contact_lockout_until');
+            signupAttempts = 0;
+            sessionStorage.removeItem('signup_attempts');
+            sessionStorage.removeItem('signup_lockout_until');
             
-            // Log successful submission
-            console.log('Secure Contact Form Submission:', {
-                csrf_token: contactData.csrf_token,
-                email: contactData.email,
-                subject: contactData.subject,
-                timestamp: contactData.timestamp
+            // Log successful signup
+            console.log('Secure Signup Successful:', {
+                csrf_token: signupData.csrf_token,
+                email: signupData.email,
+                name: `${signupData.firstName} ${signupData.lastName}`,
+                timestamp: signupData.timestamp
             });
             
-            // Show success message
-            $('#successMessage').addClass('show');
-            
             // Announce success to screen readers
-            $('#live-region').text('Message sent successfully. We will get back to you within 24 hours.');
+            $('#live-region').text('Account created successfully. Redirecting to sign in page...');
             
-            // Reset form
-            $('#contactForm')[0].reset();
-            $('.form-control, .form-select').removeClass('is-invalid is-valid');
-            $('.error-message').hide();
-            $('#char-count').text('0 / 1000 characters');
-            
-            // Re-enable button
-            $submitBtn.prop('disabled', false).html(originalHTML);
-            
-            // Scroll to success message
-            $('html, body').animate({
-                scrollTop: $('#successMessage').offset().top - 100
-            }, 300);
-            
-            // Hide success message after 10 seconds
+            // Show success alert
             setTimeout(function() {
-                $('#successMessage').removeClass('show');
-            }, 10000);
+                alert(`Welcome, ${signupData.firstName}!\n\nYour account has been created successfully.\n\nEmail: ${signupData.email}\n\nYou can now sign in with your credentials.`);
+                window.location.href = 'sign-in.html';
+            }, 1000);
             
         } catch (error) {
-            console.error('Contact form error:', error);
+            console.error('Signup error:', error);
             showError('firstName', 'An error occurred. Please try again.');
             $('#live-region').text('An error occurred. Please try again.');
-            $submitBtn.prop('disabled', false).html(originalHTML);
+            $submitBtn.prop('disabled', false).html(originalText);
         }
     });
     
@@ -491,16 +582,16 @@ $(document).ready(function() {
     }
     
     function showLockoutMessage(minutes) {
-        alert(`Too many form submissions.\n\nFor security reasons, please wait ${minutes} minute${minutes > 1 ? 's' : ''} before trying again.`);
+        alert(`Too many signup attempts.\n\nYour session has been temporarily locked for security.\n\nPlease try again in ${minutes} minute${minutes > 1 ? 's' : ''}.`);
         $('#submitBtn').prop('disabled', true);
-        showError('firstName', `Form locked. Try again in ${minutes} minute${minutes > 1 ? 's' : ''}.`);
-        $('#live-region').text(`Form locked due to too many attempts. Try again in ${minutes} minute${minutes > 1 ? 's' : ''}.`);
+        showError('firstName', `Account locked. Try again in ${minutes} minute${minutes > 1 ? 's' : ''}.`);
+        $('#live-region').text(`Account locked due to too many failed attempts. Try again in ${minutes} minute${minutes > 1 ? 's' : ''}.`);
     }
     
     // ============================================
     // WCAG 2.2 AA - FOCUS VISIBLE ENHANCEMENT
     // ============================================
-    $('input, button, a, select, textarea').on('focus', function() {
+    $('input, button, a, .form-check-input').on('focus', function() {
         $(this).addClass('focus-visible');
     }).on('blur', function() {
         $(this).removeClass('focus-visible');
@@ -515,6 +606,7 @@ $(document).ready(function() {
     console.log('✓ SQL Injection: Pattern detection active');
     console.log('✓ Rate Limiting: 5 attempts before 15-min lockout');
     console.log('✓ Input Sanitization: Real-time cleaning');
+    console.log('✓ Password Strength: Enhanced validation');
     console.log('✓ Browser Fingerprinting: Enhanced security');
     console.log('✓ WCAG 2.2 AA Compliant');
     console.log('✓ OWASP Top 10 Protection Active');

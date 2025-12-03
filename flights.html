@@ -1,0 +1,756 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Search and book flights worldwide with Booking.com">
+    <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline' https://code.jquery.com https://cdn.jsdelivr.net; style-src 'self' 'unsafe-inline' https://cdn.jsdelivr.net; img-src 'self' https: data:; font-src 'self' https://cdn.jsdelivr.net;">
+    <title>Flights | Booking.com</title>
+    
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    
+    <!-- External CSS - Using same styles.css for consistency -->
+    <link rel="stylesheet" href="styles.css">
+    
+    <style>
+        /* Additional styles specific to flights page that complement styles.css */
+        .flights-hero {
+            background: linear-gradient(135deg, var(--bui-color-primary-dark) 0%, var(--bui-color-primary) 100%);
+            color: white;
+            padding: 80px var(--bui-spacing-4) 100px;
+            text-align: center;
+        }
+        
+        .flights-hero h1 {
+            font-size: 40px;
+            margin-bottom: var(--bui-spacing-3);
+            font-weight: 700;
+        }
+        
+        .flights-hero p {
+            font-size: 18px;
+            margin: 0;
+        }
+        
+        .flights-container {
+            max-width: 1200px;
+            margin: -60px auto 80px;
+            padding: 0 var(--bui-spacing-4);
+        }
+        
+        .search-card {
+            background: var(--bui-color-white);
+            border-radius: 8px;
+            box-shadow: 0 4px 16px rgba(0,0,0,0.15);
+            padding: 40px;
+            border: 4px solid var(--bui-color-complement);
+        }
+        
+        .trip-type {
+            display: flex;
+            gap: var(--bui-spacing-4);
+            margin-bottom: var(--bui-spacing-5);
+        }
+        
+        .trip-type label {
+            display: flex;
+            align-items: center;
+            gap: var(--bui-spacing-2);
+            cursor: pointer;
+            font-weight: 600;
+            color: var(--bui-color-text);
+            font-size: 16px;
+        }
+        
+        .trip-type input[type="radio"] {
+            width: 20px;
+            height: 20px;
+            cursor: pointer;
+            border: 2px solid #767676;
+        }
+        
+        .trip-type input[type="radio"]:focus {
+            outline: 3px solid var(--bui-color-primary);
+            outline-offset: 2px;
+        }
+        
+        .search-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: var(--bui-spacing-3);
+            margin-bottom: var(--bui-spacing-3);
+        }
+        
+        .search-grid-full {
+            grid-column: 1 / -1;
+        }
+        
+        .form-label {
+            font-weight: 600;
+            color: var(--bui-color-text);
+            margin-bottom: var(--bui-spacing-2);
+            display: block;
+            font-size: 14px;
+        }
+        
+        .form-control, .form-select {
+            padding: 12px;
+            border: 2px solid #767676;
+            border-radius: var(--bui-border-radius);
+            width: 100%;
+            font-size: 16px;
+            font-family: inherit;
+            transition: border-color 0.3s, box-shadow 0.3s;
+        }
+        
+        .form-control:focus, .form-select:focus {
+            border-color: var(--bui-color-primary);
+            box-shadow: 0 0 0 3px rgba(0, 53, 128, 0.25);
+            outline: none;
+        }
+        
+        .form-control.is-invalid {
+            border-color: var(--bui-color-destructive);
+            border-width: 2px;
+        }
+        
+        .form-control.is-invalid:focus {
+            box-shadow: 0 0 0 3px rgba(204, 0, 0, 0.25);
+        }
+        
+        .error-message {
+            color: var(--bui-color-destructive);
+            font-size: 14px;
+            font-weight: 600;
+            margin-top: 6px;
+            display: none;
+        }
+        
+        .airport-suggestions {
+            position: absolute;
+            top: 100%;
+            left: 0;
+            right: 0;
+            background: white;
+            border: 2px solid var(--bui-color-primary);
+            border-top: none;
+            border-radius: 0 0 4px 4px;
+            max-height: 300px;
+            overflow-y: auto;
+            z-index: 1000;
+            display: none;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.15);
+        }
+        
+        .suggestion-item {
+            padding: 12px;
+            cursor: pointer;
+            border-bottom: 1px solid #E0E0E0;
+        }
+        
+        .suggestion-item:last-child {
+            border-bottom: none;
+        }
+        
+        .suggestion-item:hover, 
+        .suggestion-item:focus {
+            background: var(--bui-color-background);
+        }
+        
+        .suggestion-item:focus {
+            outline: 3px solid var(--bui-color-primary);
+            outline-offset: -3px;
+        }
+        
+        .suggestion-item strong {
+            color: var(--bui-color-primary);
+            font-weight: 600;
+        }
+        
+        .suggestion-item small {
+            color: var(--bui-color-text-light);
+            display: block;
+            margin-top: 2px;
+            font-size: 13px;
+        }
+        
+        .swap-container {
+            position: relative;
+            display: flex;
+            gap: var(--bui-spacing-3);
+            align-items: end;
+        }
+        
+        .swap-button {
+            position: absolute;
+            left: 50%;
+            bottom: 12px;
+            transform: translateX(-50%);
+            background: var(--bui-color-primary);
+            color: white;
+            border: none;
+            border-radius: 50%;
+            width: 44px;
+            height: 44px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            z-index: 10;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.2);
+            transition: all 0.3s;
+            font-size: 20px;
+        }
+        
+        .swap-button:hover {
+            background: var(--bui-color-primary-dark);
+            transform: translateX(-50%) rotate(180deg);
+        }
+        
+        .swap-button:focus {
+            outline: 3px solid var(--bui-color-complement);
+            outline-offset: 2px;
+            transform: translateX(-50%);
+        }
+        
+        .btn-search-flights {
+            background-color: var(--bui-color-primary);
+            color: white;
+            border: none;
+            padding: 14px 32px;
+            border-radius: var(--bui-border-radius);
+            font-size: 16px;
+            font-weight: 600;
+            width: 100%;
+            margin-top: var(--bui-spacing-4);
+            transition: background-color 0.3s;
+            cursor: pointer;
+            min-height: 48px;
+        }
+        
+        .btn-search-flights:hover:not(:disabled) {
+            background-color: var(--bui-color-primary-dark);
+        }
+        
+        .btn-search-flights:focus {
+            outline: 3px solid var(--bui-color-complement);
+            outline-offset: 2px;
+        }
+        
+        .btn-search-flights:disabled {
+            background-color: #999999;
+            cursor: not-allowed;
+            opacity: 0.6;
+        }
+        
+        .text-danger {
+            color: var(--bui-color-destructive);
+        }
+        
+        /* Flight Results Section */
+        .flight-results {
+            margin-top: 40px;
+            display: none;
+        }
+        
+        .flight-results.show {
+            display: block;
+        }
+        
+        .results-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: var(--bui-spacing-4);
+            padding-bottom: var(--bui-spacing-3);
+            border-bottom: 2px solid #CCCCCC;
+        }
+        
+        .results-header h2 {
+            color: var(--bui-color-primary);
+            font-size: 24px;
+            margin: 0;
+            font-weight: 700;
+        }
+        
+        .sort-by {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+        
+        .sort-by label {
+            font-weight: 600;
+            color: var(--bui-color-text);
+            font-size: 14px;
+        }
+        
+        .flight-card {
+            background: var(--bui-color-white);
+            border: 2px solid #CCCCCC;
+            border-radius: 8px;
+            padding: var(--bui-spacing-4);
+            margin-bottom: var(--bui-spacing-3);
+            transition: all 0.3s;
+        }
+        
+        .flight-card:hover {
+            box-shadow: 0 4px 16px rgba(0,0,0,0.15);
+            border-color: var(--bui-color-primary);
+        }
+        
+        .flight-card:focus-within {
+            outline: 3px solid var(--bui-color-primary);
+            outline-offset: 2px;
+        }
+        
+        .flight-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: var(--bui-spacing-3);
+        }
+        
+        .airline-info {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+        
+        .airline-logo {
+            width: 48px;
+            height: 48px;
+            background: var(--bui-color-background);
+            border-radius: var(--bui-border-radius);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 24px;
+            border: 1px solid #CCCCCC;
+        }
+        
+        .airline-name {
+            font-weight: 600;
+            color: var(--bui-color-text);
+            font-size: 16px;
+        }
+        
+        .flight-class {
+            color: var(--bui-color-text-light);
+            font-size: 14px;
+            margin-top: 2px;
+        }
+        
+        .price-tag {
+            text-align: right;
+        }
+        
+        .price-amount {
+            font-size: 32px;
+            font-weight: 700;
+            color: var(--bui-color-primary);
+        }
+        
+        .price-label {
+            font-size: 13px;
+            color: var(--bui-color-text-light);
+        }
+        
+        .flight-details {
+            display: grid;
+            grid-template-columns: 1fr auto 1fr;
+            gap: var(--bui-spacing-3);
+            align-items: center;
+            margin-bottom: var(--bui-spacing-3);
+        }
+        
+        .flight-time {
+            text-align: center;
+        }
+        
+        .time {
+            font-size: 24px;
+            font-weight: 600;
+            color: var(--bui-color-text);
+        }
+        
+        .airport-code {
+            color: var(--bui-color-text-light);
+            font-size: 14px;
+            margin-top: 4px;
+        }
+        
+        .flight-duration {
+            text-align: center;
+            position: relative;
+            padding: 0 var(--bui-spacing-3);
+        }
+        
+        .duration-line {
+            height: 2px;
+            background: #767676;
+            position: relative;
+            margin: 12px 0;
+        }
+        
+        .duration-line::before {
+            content: '✈';
+            position: absolute;
+            left: 50%;
+            top: 50%;
+            transform: translate(-50%, -50%);
+            background: white;
+            padding: 0 8px;
+            color: var(--bui-color-primary);
+            font-size: 16px;
+        }
+        
+        .duration-text {
+            font-size: 14px;
+            color: var(--bui-color-text);
+            font-weight: 600;
+        }
+        
+        .stops-info {
+            font-size: 13px;
+            color: var(--bui-color-text-light);
+            margin-top: 4px;
+        }
+        
+        .flight-features {
+            display: flex;
+            gap: var(--bui-spacing-2);
+            flex-wrap: wrap;
+            padding-top: var(--bui-spacing-3);
+            border-top: 1px solid #CCCCCC;
+        }
+        
+        .feature-tag {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            padding: 6px 12px;
+            background: var(--bui-color-background);
+            border-radius: var(--bui-border-radius);
+            font-size: 13px;
+            color: var(--bui-color-text);
+            border: 1px solid #CCCCCC;
+        }
+        
+        .btn-book-flight {
+            background-color: var(--bui-color-primary);
+            color: white;
+            border: none;
+            padding: 12px 32px;
+            border-radius: var(--bui-border-radius);
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: background-color 0.3s;
+            width: 100%;
+            margin-top: var(--bui-spacing-3);
+            min-height: 48px;
+        }
+        
+        .btn-book-flight:hover {
+            background-color: var(--bui-color-primary-dark);
+        }
+        
+        .btn-book-flight:focus {
+            outline: 3px solid var(--bui-color-complement);
+            outline-offset: 2px;
+        }
+        
+        footer {
+            background: var(--bui-color-primary);
+            color: white;
+            padding: 40px var(--bui-spacing-4);
+            text-align: center;
+            margin-top: 60px;
+        }
+        
+        footer p {
+            margin: 0;
+        }
+        
+        footer p:first-child {
+            font-size: 14px;
+            margin-bottom: 8px;
+        }
+        
+        footer p:last-child {
+            font-size: 12px;
+            opacity: 0.9;
+        }
+        
+        /* Responsive Design */
+        @media (max-width: 768px) {
+            .flights-hero h1 {
+                font-size: 32px;
+            }
+            
+            .search-card {
+                padding: var(--bui-spacing-4);
+            }
+            
+            .search-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .swap-container {
+                flex-direction: column;
+                gap: 40px;
+            }
+            
+            .swap-button {
+                top: 50%;
+                left: auto;
+                right: 12px;
+                transform: translateY(-50%) rotate(90deg);
+            }
+            
+            .swap-button:hover {
+                transform: translateY(-50%) rotate(270deg);
+            }
+            
+            .swap-button:focus {
+                transform: translateY(-50%) rotate(90deg);
+            }
+            
+            .flight-details {
+                grid-template-columns: 1fr;
+                gap: var(--bui-spacing-3);
+            }
+            
+            .flight-header {
+                flex-direction: column;
+                gap: var(--bui-spacing-3);
+                text-align: center;
+            }
+            
+            .price-tag {
+                text-align: center;
+            }
+            
+            .results-header {
+                flex-direction: column;
+                gap: var(--bui-spacing-2);
+                align-items: flex-start;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Skip Link for Accessibility (WCAG 2.4.1) -->
+    <a href="#main-content" class="skip-link">Skip to main content</a>
+    
+    <!-- ARIA Live Region for Screen Reader Announcements -->
+    <div class="live-region" role="status" aria-live="polite" aria-atomic="true" id="live-region"></div>
+    
+    <!-- Header - Uses styles from styles.css -->
+    <header>
+        <div class="header-container">
+            <a href="index.html" class="logo" aria-label="Booking.com homepage">Booking.com</a>
+            <nav aria-label="Main navigation">
+                <ul class="header-nav">
+                    <li><a href="flights.html" aria-current="page" style="font-weight: 600; border-bottom: 2px solid white;">Flights</a></li>
+                    <li><a href="car-rentals.html">Car rentals</a></li>
+                    <li><a href="sign-in.html">Sign in</a></li>
+                    <li><a href="contact.html">Contact Us</a></li>
+                </ul>
+            </nav>
+        </div>
+    </header>
+    
+    <!-- Hero Section -->
+    <section class="flights-hero" role="banner">
+        <div class="container">
+            <h1>Search flights worldwide</h1>
+            <p>Compare and book flights from hundreds of airlines</p>
+        </div>
+    </section>
+    
+    <!-- Flight Search Form -->
+    <main id="main-content">
+        <div class="flights-container">
+            <div class="search-card">
+                <!-- Trip Type Selection -->
+                <fieldset class="trip-type" role="radiogroup" aria-label="Trip type selection">
+                    <legend class="sr-only">Select trip type</legend>
+                    <label>
+                        <input type="radio" name="tripType" value="round" checked aria-checked="true">
+                        Round trip
+                    </label>
+                    <label>
+                        <input type="radio" name="tripType" value="oneway" aria-checked="false">
+                        One way
+                    </label>
+                </fieldset>
+                
+                <form id="flightsSearchForm" novalidate>
+                    <div class="search-grid">
+                        <!-- From/To with Swap Button -->
+                        <div class="swap-container search-grid-full">
+                            <div class="form-group" style="flex: 1;">
+                                <label for="from" class="form-label">
+                                    From <span class="text-danger" aria-label="required">*</span>
+                                </label>
+                                <input 
+                                    type="text" 
+                                    class="form-control" 
+                                    id="from" 
+                                    name="from"
+                                    placeholder="Departure city or airport"
+                                    required
+                                    aria-required="true"
+                                    aria-describedby="from-error"
+                                    autocomplete="off"
+                                    role="combobox"
+                                    aria-autocomplete="list"
+                                    aria-controls="fromSuggestions"
+                                    aria-expanded="false"
+                                >
+                                <div class="airport-suggestions" id="fromSuggestions" role="listbox" aria-label="Airport suggestions"></div>
+                                <div class="error-message" id="from-error" role="alert"></div>
+                            </div>
+                            
+                            <button 
+                                type="button" 
+                                class="swap-button" 
+                                id="swapButton"
+                                aria-label="Swap departure and destination airports"
+                                title="Swap airports"
+                            >
+                                ⇄
+                            </button>
+                            
+                            <div class="form-group" style="flex: 1;">
+                                <label for="to" class="form-label">
+                                    To <span class="text-danger" aria-label="required">*</span>
+                                </label>
+                                <input 
+                                    type="text" 
+                                    class="form-control" 
+                                    id="to" 
+                                    name="to"
+                                    placeholder="Destination city or airport"
+                                    required
+                                    aria-required="true"
+                                    aria-describedby="to-error"
+                                    autocomplete="off"
+                                    role="combobox"
+                                    aria-autocomplete="list"
+                                    aria-controls="toSuggestions"
+                                    aria-expanded="false"
+                                >
+                                <div class="airport-suggestions" id="toSuggestions" role="listbox" aria-label="Airport suggestions"></div>
+                                <div class="error-message" id="to-error" role="alert"></div>
+                            </div>
+                        </div>
+                        
+                        <!-- Departure Date -->
+                        <div class="form-group">
+                            <label for="departDate" class="form-label">
+                                Departure date <span class="text-danger" aria-label="required">*</span>
+                            </label>
+                            <input 
+                                type="date" 
+                                class="form-control" 
+                                id="departDate" 
+                                name="departDate"
+                                required
+                                aria-required="true"
+                                aria-describedby="departDate-error"
+                            >
+                            <div class="error-message" id="departDate-error" role="alert"></div>
+                        </div>
+                        
+                        <!-- Return Date -->
+                        <div class="form-group" id="returnDateContainer">
+                            <label for="returnDate" class="form-label">
+                                Return date <span class="text-danger" aria-label="required">*</span>
+                            </label>
+                            <input 
+                                type="date" 
+                                class="form-control" 
+                                id="returnDate" 
+                                name="returnDate"
+                                required
+                                aria-required="true"
+                                aria-describedby="returnDate-error"
+                            >
+                            <div class="error-message" id="returnDate-error" role="alert"></div>
+                        </div>
+                        
+                        <!-- Passengers -->
+                        <div class="form-group">
+                            <label for="passengers" class="form-label">Passengers</label>
+                            <select class="form-select" id="passengers" name="passengers" aria-label="Number of passengers">
+                                <option value="1" selected>1 passenger</option>
+                                <option value="2">2 passengers</option>
+                                <option value="3">3 passengers</option>
+                                <option value="4">4 passengers</option>
+                                <option value="5">5 passengers</option>
+                                <option value="6">6+ passengers</option>
+                            </select>
+                        </div>
+                        
+                        <!-- Class -->
+                        <div class="form-group">
+                            <label for="class" class="form-label">Class</label>
+                            <select class="form-select" id="class" name="class" aria-label="Travel class">
+                                <option value="economy" selected>Economy</option>
+                                <option value="premium">Premium Economy</option>
+                                <option value="business">Business</option>
+                                <option value="first">First Class</option>
+                            </select>
+                        </div>
+                    </div>
+                    
+                    <button type="submit" class="btn-search-flights" id="searchBtn">
+                        Search flights
+                    </button>
+                </form>
+            </div>
+            
+            <!-- Flight Results Section -->
+            <div class="flight-results" id="flightResults" role="region" aria-label="Flight search results">
+                <div class="results-header">
+                    <h2 id="resultsTitle">Available Flights</h2>
+                    <div class="sort-by">
+                        <label for="sortFlights">Sort by:</label>
+                        <select id="sortFlights" class="form-select" aria-label="Sort flights by">
+                            <option value="recommended">Recommended</option>
+                            <option value="price-low">Price (Low to High)</option>
+                            <option value="price-high">Price (High to Low)</option>
+                            <option value="duration">Duration</option>
+                        </select>
+                    </div>
+                </div>
+                
+                <div id="flightCardsContainer">
+                    <!-- Flight cards will be inserted here by JavaScript -->
+                </div>
+            </div>
+        </div>
+    </main>
+    
+    <!-- Footer -->
+    <footer>
+        <div class="container">
+            <p>© 2025 Booking.com. All rights reserved.</p>
+            <p>Your trusted travel partner worldwide</p>
+        </div>
+    </footer>
+    
+    <!-- jQuery -->
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    
+    <!-- Bootstrap JS -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    
+    <!-- External JavaScript -->
+    <script src="flights.js"></script>
+</body>
+</html>

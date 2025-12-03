@@ -5,10 +5,9 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="description" content="Booking.com improved prototype with evidence-based UX enhancements">
     <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline'; img-src 'self' https: data:;">
-    <title>Booking.com | Improved Prototype - Hotels & Accommodations</title>
-	<link rel="icon" type="image/x-icon" href="images/Favicon/favicon.ico">
+    <title>Booking.com | Hotels & Accommodations in Australia</title>
     
-    <!-- Link to External CSS -->
+    <!-- WCAG 2.2 AA Compliant Styles -->
     <link rel="stylesheet" href="styles.css">
 </head>
 <body>
@@ -18,28 +17,27 @@
     <!-- ARIA Live Region for Screen Reader Announcements -->
     <div class="live-region" role="status" aria-live="polite" aria-atomic="true" id="live-region"></div>
     
-    <!-- Header - Frame 1 from Wireframes -->
-    <header role="banner">
+    <!-- Header -->
+    <header>
         <div class="header-container">
-            <a href="#" class="logo" aria-label="Booking.com homepage">Booking.com</a>
+            <a href="index.html" class="logo" aria-label="Booking.com homepage">Booking.com</a>
             <nav aria-label="Main navigation">
                 <ul class="header-nav">
-                    <li><a href="#stays">Stays</a></li>
-                    <li><a href="#flights">Flights</a></li>
-                    <li><a href="#car-rentals">Car rentals</a></li>
-                    <li><a href="#sign-in">Sign in</a></li>
+                    <li><a href="flights.html">Flights</a></li>
+                    <li><a href="car-rentals.html">Car rentals</a></li>
+                    <li><a href="sign-in.html">Sign in</a></li>
                     <li><a href="contact.html" class="contact-link">Contact Us</a></li>
                 </ul>
             </nav>
         </div>
     </header>
     
-    <!-- Hero Section with Search Bar - Frame 1 from Wireframes -->
+    <!-- Hero Section with Search Bar -->
     <section class="hero-section" role="banner">
         <h1>Find your next stay</h1>
-        <p>Search low prices on hotels, homes and much more...</p>
+        <p>Search low prices on hotels, homes and much more across Australia...</p>
         
-        <!-- Search Form with Yellow Outline (Wireframe Frame 1) -->
+        <!-- Search Form with Yellow Outline -->
         <div class="search-container">
             <form class="search-form" role="search" aria-label="Search for accommodations" id="search-form">
                 <div class="form-group">
@@ -53,9 +51,20 @@
                         aria-required="true"
                         autocomplete="off"
                         maxlength="100"
-                        pattern="[a-zA-Z0-9\s\-,.']{2,100}"
-                        title="Please enter a valid destination (2-100 characters)"
+                        list="city-suggestions"
                     >
+                    <datalist id="city-suggestions">
+                        <option value="Sydney">
+                        <option value="Melbourne">
+                        <option value="Brisbane">
+                        <option value="Perth">
+                        <option value="Adelaide">
+                        <option value="Gold Coast">
+                        <option value="Canberra">
+                        <option value="Hobart">
+                        <option value="Darwin">
+                        <option value="Cairns">
+                    </datalist>
                 </div>
                 
                 <div class="form-group">
@@ -96,30 +105,30 @@
         </div>
     </section>
     
-    <!-- Main Content - Results Section (Frames 2, 3 from Wireframes) -->
-    <main id="main-content" role="main">
+    <!-- Main Content - Results Section -->
+    <main id="main-content">
         <section class="results-section" aria-label="Search results and filters">
             
-            <!-- Filters Sidebar - Progressive Disclosure (Frames 2 & 3) -->
-            <aside class="filters-sidebar" role="complementary" aria-label="Filter options">
+            <!-- Filters Sidebar - Progressive Disclosure -->
+            <aside class="filters-sidebar" aria-label="Filter options">
                 <h2>Filter by:</h2>
                 
-                <!-- PRIMARY FILTERS (6 filters - Always Visible - Frame 2) -->
+                <!-- PRIMARY FILTERS (6 filters - Always Visible) -->
                 <div class="filter-group">
                     <h3>Price Range</h3>
                     <div class="filter-option">
                         <input type="checkbox" id="price-low" name="price" value="low" data-filter-type="price">
-                        <label for="price-low">Under $100</label>
+                        <label for="price-low">Under $150</label>
                         <span class="filter-count">(245)</span>
                     </div>
                     <div class="filter-option">
                         <input type="checkbox" id="price-mid" name="price" value="mid" data-filter-type="price">
-                        <label for="price-mid">$100 - $200</label>
+                        <label for="price-mid">$150 - $300</label>
                         <span class="filter-count">(189)</span>
                     </div>
                     <div class="filter-option">
                         <input type="checkbox" id="price-high" name="price" value="high" data-filter-type="price">
-                        <label for="price-high">$200+</label>
+                        <label for="price-high">$300+</label>
                         <span class="filter-count">(156)</span>
                     </div>
                 </div>
@@ -209,7 +218,7 @@
                     </div>
                 </div>
                 
-                <!-- SECONDARY FILTERS (17 filters - Hidden by Default - Frame 3) -->
+                <!-- SECONDARY FILTERS (Hidden by Default) -->
                 <div class="secondary-filters" id="secondary-filters">
                     <div class="filter-group">
                         <h3>Bed Preference</h3>
@@ -287,7 +296,7 @@
                     </div>
                 </div>
                 
-                <!-- Progressive Disclosure Button (Frame 2 & 3) -->
+                <!-- Progressive Disclosure Button -->
                 <button 
                     type="button" 
                     class="btn-show-more" 
@@ -299,7 +308,7 @@
                 </button>
             </aside>
             
-            <!-- Properties List (Frames 4, 5 from Wireframes) -->
+            <!-- Properties List -->
             <div class="properties-grid">
                 <div class="results-header">
                     <h2 id="results-count">Sydney: 590 properties found</h2>
@@ -311,137 +320,10 @@
                     </select>
                 </div>
                 
-                <!-- Property Card 1 - GREEN MESSAGE (Frame 4) -->
-                <article class="property-card">
-                    <div class="property-image-container">
-                        <img 
-                            src="https://sydneyharbourhotel.com/wordpress/wp-content/uploads/2024/01/A08I0348.jpg" 
-                            alt="Harbour View Hotel exterior with harbour views"
-                            class="property-image"
-                            loading="lazy"
-                        >
-                    </div>
-                    
-                    <div class="property-details">
-                        <a href="#" class="property-name">Harbour View Hotel</a>
-                        <p class="property-location">The Rocks, Sydney CBD</p>
-                        
-                        <div class="property-rating">
-                            <span class="rating-badge" aria-label="Rating: 9.2 out of 10">9.2</span>
-                            <span class="rating-text">Wonderful</span>
-                            <span class="rating-count">(1,284 reviews)</span>
-                        </div>
-                        
-                        <div class="property-amenities">
-                            <span class="amenity-tag">Free WiFi</span>
-                            <span class="amenity-tag">Pool</span>
-                            <span class="amenity-tag">Restaurant</span>
-                            <span class="amenity-tag">Parking</span>
-                        </div>
-                        
-                        <!-- Single GREEN Trust Message (Frame 4 - Priority 1) -->
-                        <div class="property-messages">
-                            <span class="message-tag message-success">✓ Free cancellation</span>
-                        </div>
-                    </div>
-                    
-                    <div class="property-pricing">
-                        <div class="price-container">
-                            <p class="price-label">1 night, 2 adults</p>
-                            <p class="price-value">$189</p>
-                            <p class="price-taxes">+$28 taxes and charges</p>
-                        </div>
-                        <button class="btn-availability" aria-label="See availability for Harbour View Hotel">See availability</button>
-                    </div>
-                </article>
+                <!-- Property cards will be dynamically inserted here -->
+                <div id="properties-container"></div>
                 
-                <!-- Property Card 2 - RED URGENCY MESSAGE (Frame 5) -->
-                <article class="property-card">
-                    <div class="property-image-container">
-                        <img 
-                            src="https://dynamic-media-cdn.tripadvisor.com/media/photo-o/13/de/35/aa/the-grand-hotel.jpg?w=900&h=-1&s=1" 
-                            alt="Sydney Grand Hotel modern exterior"
-                            class="property-image"
-                            loading="lazy"
-                        >
-                    </div>
-                    
-                    <div class="property-details">
-                        <a href="#" class="property-name">Sydney Grand Hotel</a>
-                        <p class="property-location">Darling Harbour</p>
-                        
-                        <div class="property-rating">
-                            <span class="rating-badge" aria-label="Rating: 8.7 out of 10">8.7</span>
-                            <span class="rating-text">Excellent</span>
-                            <span class="rating-count">(892 reviews)</span>
-                        </div>
-                        
-                        <div class="property-amenities">
-                            <span class="amenity-tag">Free WiFi</span>
-                            <span class="amenity-tag">Gym</span>
-                            <span class="amenity-tag">24-hour front desk</span>
-                        </div>
-                        
-                        <!-- Single RED Urgency Message (Frame 5 - Priority 1) -->
-                        <div class="property-messages">
-                            <span class="message-tag message-urgency">⚠ Only 2 rooms left at this price!</span>
-                        </div>
-                    </div>
-                    
-                    <div class="property-pricing">
-                        <div class="price-container">
-                            <p class="price-label">1 night, 2 adults</p>
-                            <p class="price-value">$156</p>
-                            <p class="price-taxes">+$23 taxes and charges</p>
-                        </div>
-                        <button class="btn-availability" aria-label="See availability for Sydney Grand Hotel">See availability</button>
-                    </div>
-                </article>
-                
-                <!-- Property Card 3 - GREEN MESSAGE -->
-                <article class="property-card">
-                    <div class="property-image-container">
-                        <img 
-                            src="https://www.onecircularquay.com/contentassets/ff088353d7814d189655ec7d5a2fb9cf/apartment-c_living_aero_01.jpg?width=300&height=400&upscale=false&mode=max&quality=80" 
-                            alt="Circular Quay Apartment with harbour view"
-                            class="property-image"
-                            loading="lazy"
-                        >
-                    </div>
-                    
-                    <div class="property-details">
-                        <a href="#" class="property-name">Circular Quay Apartment</a>
-                        <p class="property-location">Sydney CBD</p>
-                        
-                        <div class="property-rating">
-                            <span class="rating-badge" aria-label="Rating: 9.5 out of 10">9.5</span>
-                            <span class="rating-text">Exceptional</span>
-                            <span class="rating-count">(456 reviews)</span>
-                        </div>
-                        
-                        <div class="property-amenities">
-                            <span class="amenity-tag">Full kitchen</span>
-                            <span class="amenity-tag">Harbour view</span>
-                            <span class="amenity-tag">Free WiFi</span>
-                        </div>
-                        
-                        <!-- Single GREEN Message -->
-                        <div class="property-messages">
-                            <span class="message-tag message-success">✓ Free cancellation</span>
-                        </div>
-                    </div>
-                    
-                    <div class="property-pricing">
-                        <div class="price-container">
-                            <p class="price-label">1 night, 2 adults</p>
-                            <p class="price-value">$245</p>
-                            <p class="price-taxes">+$37 taxes and charges</p>
-                        </div>
-                        <button class="btn-availability" aria-label="See availability for Circular Quay Apartment">See availability</button>
-                    </div>
-                </article>
-                
-                <!-- Skeleton Loader (Frame 8 - Priority 4) -->
+                <!-- Skeleton Loader -->
                 <div class="skeleton-loader" id="skeleton-loader">
                     <div class="skeleton-card">
                         <div class="skeleton-image"></div>
@@ -465,6 +347,6 @@
     </main>
     
     <!-- Link to External JavaScript -->
-    <script src="script.js"></script>
+    <script src="index-script.js"></script>
 </body>
 </html>
